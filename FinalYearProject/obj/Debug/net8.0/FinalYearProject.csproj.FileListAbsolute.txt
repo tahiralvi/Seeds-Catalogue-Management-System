@@ -31,3 +31,4 @@ D:\Coding\FinalYearProject\FinalYearProject\obj\Debug\net8.0\refint\FinalYearPro
 D:\Coding\FinalYearProject\FinalYearProject\obj\Debug\net8.0\FinalYearProject.pdb
 D:\Coding\FinalYearProject\FinalYearProject\obj\Debug\net8.0\FinalYearProject.genruntimeconfig.cache
 D:\Coding\FinalYearProject\FinalYearProject\obj\Debug\net8.0\ref\FinalYearProject.dll
+D:\Coding\FinalYearProject\FinalYearProject\obj\Debug\net8.0\FinalYearProject.sourcelink.json
