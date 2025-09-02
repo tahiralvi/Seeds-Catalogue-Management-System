@@ -1,0 +1,11 @@
+D:\Coding\FinalYearProject\FinalYearProject.DLL\bin\Debug\net8.0\FinalYearProject.DLL.deps.json
+D:\Coding\FinalYearProject\FinalYearProject.DLL\bin\Debug\net8.0\FinalYearProject.DLL.dll
+D:\Coding\FinalYearProject\FinalYearProject.DLL\bin\Debug\net8.0\FinalYearProject.DLL.pdb
+D:\Coding\FinalYearProject\FinalYearProject.DLL\obj\Debug\net8.0\FinalYearProject.DLL.GeneratedMSBuildEditorConfig.editorconfig
+D:\Coding\FinalYearProject\FinalYearProject.DLL\obj\Debug\net8.0\FinalYearProject.DLL.AssemblyInfoInputs.cache
+D:\Coding\FinalYearProject\FinalYearProject.DLL\obj\Debug\net8.0\FinalYearProject.DLL.AssemblyInfo.cs
+D:\Coding\FinalYearProject\FinalYearProject.DLL\obj\Debug\net8.0\FinalYearProject.DLL.csproj.CoreCompileInputs.cache
+D:\Coding\FinalYearProject\FinalYearProject.DLL\obj\Debug\net8.0\FinalYearProject.DLL.dll
+D:\Coding\FinalYearProject\FinalYearProject.DLL\obj\Debug\net8.0\refint\FinalYearProject.DLL.dll
+D:\Coding\FinalYearProject\FinalYearProject.DLL\obj\Debug\net8.0\FinalYearProject.DLL.pdb
+D:\Coding\FinalYearProject\FinalYearProject.DLL\obj\Debug\net8.0\ref\FinalYearProject.DLL.dll
