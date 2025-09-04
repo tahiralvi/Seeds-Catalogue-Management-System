@@ -1,7 +1,18 @@
+using FinalYearProject.Models;
+using FinalYearProject.Services.Interface;
+using FinalYearProject.Services.Model;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Configure DatabaseSettings from appsettings.json
+builder.Services.Configure<DatabaseSettings>(
+    builder.Configuration.GetSection("DatabaseSettings"));
+
+// Register the SeedService
+builder.Services.AddScoped<ISeedService, SeedService>();
 
 var app = builder.Build();
 
@@ -22,6 +33,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Seeds}/{action=Index}/{id?}");
 
 app.Run();

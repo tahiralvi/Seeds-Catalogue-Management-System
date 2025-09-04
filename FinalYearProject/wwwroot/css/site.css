@@ -20,3 +20,81 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+/****/
+
+/* Styles for Create Seed form */
+.card {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    border: none;
+}
+
+.card-header {
+    background: linear-gradient(45deg, #28a745, #20c997);
+    color: white;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-control:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, #28a745, #20c997);
+    border: none;
+}
+
+    .btn-primary:hover {
+        background: linear-gradient(45deg, #218838, #1aa179);
+    }
+
+/* Validation styles */
+.field-validation-error {
+    color: #dc3545;
+    font-size: 0.875rem;
+}
+
+.input-validation-error {
+    border-color: #dc3545;
+}
+
+    .input-validation-error:focus {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+    }
+
+/* Edit form specific styles */
+.btn-group .btn {
+    margin-right: 5px;
+}
+
+    .btn-group .btn:last-child {
+        margin-right: 0;
+    }
+
+/* Badge styles */
+.badge {
+    font-size: 0.85rem;
+    padding: 0.35em 0.65em;
+}
+
+/* Table improvements */
+.table th {
+    border-top: none;
+    font-weight: 600;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(40, 167, 69, 0.1);
+}
+
+/* Image thumbnail */
+.img-thumbnail {
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    padding: 0.25rem;
+}

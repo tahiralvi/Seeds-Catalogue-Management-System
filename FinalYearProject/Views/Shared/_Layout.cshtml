@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/FinalYearProject.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
 </head>
 <body>
     <header>
@@ -18,14 +20,11 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
+                    @* <ul class="navbar-nav flex-grow-1">                        
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Seeds" asp-action="Index">Seeds</a>
                         </li>
-                    </ul>
+                    </ul> *@
                 </div>
             </div>
         </nav>
@@ -34,6 +33,7 @@
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
+        <partial name="_AlertPartial" />
     </div>
 
     <footer class="border-top footer text-muted">

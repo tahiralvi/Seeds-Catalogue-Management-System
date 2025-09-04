@@ -1,0 +1,70 @@
+﻿@model FinalYearProject.Models.Seed
+
+@{
+    ViewData["Title"] = "Seed Details";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">@ViewData["Title"]</h3>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-3">Name</dt>
+                        <dd class="col-sm-9">@Model.Name</dd>
+
+                        <dt class="col-sm-3">Description</dt>
+                        <dd class="col-sm-9">@Model.Description</dd>
+
+                        <dt class="col-sm-3">Price</dt>
+                        <dd class="col-sm-9">@Model.Price.ToString("C")</dd>
+
+                        <dt class="col-sm-3">Approval Status</dt>
+                        <dd class="col-sm-9">
+                            @if (Model.Approval)
+                            {
+                                <span class="badge bg-success">Approved</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning">Pending Approval</span>
+                            }
+                        </dd>
+
+                        <dt class="col-sm-3">Stock</dt>
+                        <dd class="col-sm-9">@Model.Stock</dd>
+
+                        <dt class="col-sm-3">Expiry Date</dt>
+                        <dd class="col-sm-9">@Model.ExpiryDate.ToString("d")</dd>
+
+                        <dt class="col-sm-3">Agent ID</dt>
+                        <dd class="col-sm-9">@Model.AgentID</dd>
+
+                        <dt class="col-sm-3">Category ID</dt>
+                        <dd class="col-sm-9">@Model.CategoryID</dd>
+
+                        @if (!string.IsNullOrEmpty(Model.Image))
+                        {
+                            <dt class="col-sm-3">Image</dt>
+                            <dd class="col-sm-9">
+                                <img src="@Model.Image" alt="Seed image" class="img-thumbnail" style="max-width: 200px;" />
+                            </dd>
+                        }
+                    </dl>
+
+                    <div class="mt-3">
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Back to List
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
