@@ -12,5 +12,11 @@
         public DateTime ExpiryDate { get; set; }
         public int AgentID { get; set; }
         public int CategoryID { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime ModifiedDate { get; set; }
+
+        // Navigation properties
+        public Agent Agent { get; set; }
+        public Category Category { get; set; }
     }
 }

@@ -30,16 +30,20 @@ public class SeedCreateViewModel
     [FutureDate(ErrorMessage = "Expiry date must be in the future")]
     public DateTime ExpiryDate { get; set; }
 
-    [Required(ErrorMessage = "Agent ID is required")]
+    [Required(ErrorMessage = "Agent is required")]
     [Range(1, int.MaxValue, ErrorMessage = "Please select a valid agent")]
     public int AgentID { get; set; }
 
-    [Required(ErrorMessage = "Category ID is required")]
+    [Required(ErrorMessage = "Category is required")]
     [Range(1, int.MaxValue, ErrorMessage = "Please select a valid category")]
     public int CategoryID { get; set; }
+
+    // Navigation properties for dropdowns (not for form binding)
+    public List<Category> Categories { get; set; }
+    public List<Agent> Agents { get; set; }
 }
 
-// Custom validation attribute for future date
+// Custom validation attribute
 public class FutureDateAttribute : ValidationAttribute
 {
     public override bool IsValid(object value)

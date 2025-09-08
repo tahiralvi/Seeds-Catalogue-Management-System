@@ -35,24 +35,75 @@
                         </dd>
 
                         <dt class="col-sm-3">Stock</dt>
-                        <dd class="col-sm-9">@Model.Stock</dd>
+                        <dd class="col-sm-9">
+                            <span class="badge @(Model.Stock > 20 ? "bg-success" : Model.Stock > 5 ? "bg-warning" : "bg-danger")">
+                                @Model.Stock
+                            </span>
+                        </dd>
 
                         <dt class="col-sm-3">Expiry Date</dt>
-                        <dd class="col-sm-9">@Model.ExpiryDate.ToString("d")</dd>
+                        <dd class="col-sm-9">
+                            <span class="badge @(Model.ExpiryDate > DateTime.Now.AddDays(30) ? "bg-success" : Model.ExpiryDate > DateTime.Now ? "bg-warning" : "bg-danger")">
+                                @Model.ExpiryDate.ToString("MMM dd, yyyy")
+                            </span>
+                        </dd>
 
-                        <dt class="col-sm-3">Agent ID</dt>
-                        <dd class="col-sm-9">@Model.AgentID</dd>
+                        <dt class="col-sm-3">Category</dt>
+                        <dd class="col-sm-9">
+                            @if (Model.Category != null)
+                            {
+                                <span class="badge bg-info">@Model.Category.Name</span>
+                                @if (!string.IsNullOrEmpty(Model.Category.Description))
+                                {
+                                    <br />
+                            
+                                    <small class="text-muted">@Model.Category.Description</small>
+                                }
+                            }
+                            else
+                            {
+                                <span class="text-muted">Not specified</span>
+                            }
+                        </dd>
 
-                        <dt class="col-sm-3">Category ID</dt>
-                        <dd class="col-sm-9">@Model.CategoryID</dd>
+                        <dt class="col-sm-3">Agent</dt>
+                        <dd class="col-sm-9">
+                            @if (Model.Agent != null)
+                            {
+                                <strong>@Model.Agent.Name</strong>
+                                @if (!string.IsNullOrEmpty(Model.Agent.Email))
+                                {
+                                    <br />
+                            
+                                    <small class="text-muted">📧 @Model.Agent.Email</small>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.Agent.Phone))
+                                {
+                                    <br />
+                            
+                                    <small class="text-muted">📞 @Model.Agent.Phone</small>
+                                }
+                            }
+                            else
+                            {
+                                <span class="text-muted">Not specified</span>
+                            }
+                        </dd>
 
                         @if (!string.IsNullOrEmpty(Model.Image))
                         {
                             <dt class="col-sm-3">Image</dt>
                             <dd class="col-sm-9">
                                 <img src="@Model.Image" alt="Seed image" class="img-thumbnail" style="max-width: 200px;" />
+                                <br /><small class="text-muted"><a href="@Model.Image" target="_blank">View original</a></small>
                             </dd>
                         }
+
+                        <dt class="col-sm-3">Created Date</dt>
+                        <dd class="col-sm-9">@Model.CreatedDate.ToString("MMM dd, yyyy HH:mm")</dd>
+
+                        <dt class="col-sm-3">Last Modified</dt>
+                        <dd class="col-sm-9">@Model.ModifiedDate.ToString("MMM dd, yyyy HH:mm")</dd>
                     </dl>
 
                     <div class="mt-3">

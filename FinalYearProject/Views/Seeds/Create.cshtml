@@ -1,4 +1,4 @@
-﻿@model FinalYearProject.Models.Seed
+﻿@model FinalYearProject.Models.SeedCreateViewModel
 
 @{
     ViewData["Title"] = "Add New Seed";
@@ -55,9 +55,15 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label asp-for="AgentID" class="control-label">Agent ID</label>
-                                    <input asp-for="AgentID" type="number" class="form-control" min="1" />
-                                    <span asp-validation-for="AgentID" class="text-danger"></span>
+                                    <label asp-for="CategoryID" class="control-label">Category</label>
+                                    <select asp-for="CategoryID" class="form-select">
+                                        <option value="">-- Select Category --</option>
+                                        @foreach (var category in Model.Categories)
+                                        {
+                                            <option value="@category.Id">@category.Name</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="CategoryID" class="text-danger"></span>
                                 </div>
                             </div>
                         </div>
@@ -65,9 +71,15 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label asp-for="CategoryID" class="control-label">Category ID</label>
-                                    <input asp-for="CategoryID" type="number" class="form-control" min="1" />
-                                    <span asp-validation-for="CategoryID" class="text-danger"></span>
+                                    <label asp-for="AgentID" class="control-label">Agent</label>
+                                    <select asp-for="AgentID" class="form-select">
+                                        <option value="">-- Select Agent --</option>
+                                        @foreach (var agent in Model.Agents)
+                                        {
+                                            <option value="@agent.Id">@agent.Name</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="AgentID" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -84,14 +96,25 @@
                             <label asp-for="Approval" class="form-check-label">Approved</label>
                             <span asp-validation-for="Approval" class="text-danger"></span>
                         </div>
-
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-plus"></i> Create Seed
-                            </button>
-                            <a asp-action="Index" class="btn btn-secondary">
-                                <i class="fas fa-arrow-left"></i> Back to List
-                            </a>
+                        
+                        <div class="row">
+                            <div class="col-md-6 text-start">
+                                <div class="form-group">
+                                    <a asp-action="Index" class="btn btn-secondary">
+                                        <i class="fas fa-arrow-left"></i> Back to List
+                                    </a>
+                                    <button type="reset" class="btn btn-outline-secondary" id="resetButton">
+                                        <i class="fas fa-undo"></i> Reset
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-plus"></i> Create Seed
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -106,12 +129,10 @@
     }
 
     <script>
-        // Set minimum date for expiry date to today
         document.addEventListener('DOMContentLoaded', function() {
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('ExpiryDate').min = today;
 
-            // Form validation
             const form = document.getElementById('createSeedForm');
             form.addEventListener('submit', function(e) {
                 if (!form.checkValidity()) {
@@ -121,5 +142,73 @@
                 form.classList.add('was-validated');
             });
         });
+        
+        
+        // Reset button functionality
+            const resetButton = document.getElementById('resetButton');
+            resetButton.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                // Reset form fields
+                form.reset();
+
+                // Clear validation messages
+                form.classList.remove('was-validated');
+
+                // Clear individual validation messages
+                const validationSpans = form.querySelectorAll('.text-danger');
+                validationSpans.forEach(span => {
+                    span.textContent = '';
+                });
+
+                // Reset select dropdowns to first option
+                const selectElements = form.querySelectorAll('select');
+                selectElements.forEach(select => {
+                    select.selectedIndex = 0;
+                });
+
+                // Reset checkbox
+                const approvalCheckbox = document.getElementById('Approval');
+                if (approvalCheckbox) {
+                    approvalCheckbox.checked = false;
+                }
+
+                // Set default expiry date (6 months from now)
+                const expiryDateInput = document.getElementById('ExpiryDate');
+                if (expiryDateInput) {
+                    const sixMonthsFromNow = new Date();
+                    sixMonthsFromNow.setMonth(sixMonthsFromNow.getMonth() + 6);
+                    expiryDateInput.value = sixMonthsFromNow.toISOString().split('T')[0];
+                }
+
+                // Set focus to first field
+                const firstInput = form.querySelector('input, select, textarea');
+                if (firstInput) {
+                    firstInput.focus();
+                }
+
+                // Show success message
+                alert('Form has been reset to default values!');
+            });
+
+            // Set default values on page load
+            const setDefaultValues = function() {
+                const expiryDateInput = document.getElementById('ExpiryDate');
+                if (expiryDateInput && !expiryDateInput.value) {
+                    const sixMonthsFromNow = new Date();
+                    sixMonthsFromNow.setMonth(sixMonthsFromNow.getMonth() + 6);
+                    expiryDateInput.value = sixMonthsFromNow.toISOString().split('T')[0];
+                }
+
+                const stockInput = document.getElementById('Stock');
+                if (stockInput && !stockInput.value) {
+                    stockInput.value = '0';
+                }
+            };
+
+            setDefaultValues();
+        });
+
+
     </script>
 }

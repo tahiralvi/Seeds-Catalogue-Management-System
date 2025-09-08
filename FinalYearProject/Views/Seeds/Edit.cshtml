@@ -57,9 +57,11 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label asp-for="AgentID" class="control-label">Agent ID</label>
-                                    <input asp-for="AgentID" type="number" class="form-control" min="1" />
-                                    <span asp-validation-for="AgentID" class="text-danger"></span>
+                                    <label asp-for="CategoryID" class="control-label">Category</label>
+                                    <select asp-for="CategoryID" asp-items="ViewBag.Categories" class="form-select">
+                                        <option value="">-- Select Category --</option>
+                                    </select>
+                                    <span asp-validation-for="CategoryID" class="text-danger"></span>
                                 </div>
                             </div>
                         </div>
@@ -67,9 +69,11 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label asp-for="CategoryID" class="control-label">Category ID</label>
-                                    <input asp-for="CategoryID" type="number" class="form-control" min="1" />
-                                    <span asp-validation-for="CategoryID" class="text-danger"></span>
+                                    <label asp-for="AgentID" class="control-label">Agent</label>
+                                    <select asp-for="AgentID" asp-items="ViewBag.Agents" class="form-select">
+                                        <option value="">-- Select Agent --</option>
+                                    </select>
+                                    <span asp-validation-for="AgentID" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -87,17 +91,26 @@
                             <span asp-validation-for="Approval" class="text-danger"></span>
                         </div>
 
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-success">
-                                <i class="fas fa-save"></i> Update Seed
-                            </button>
-                            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-info">
-                                <i class="fas fa-eye"></i> View Details
-                            </a>
-                            <a asp-action="Index" class="btn btn-secondary">
-                                <i class="fas fa-arrow-left"></i> Back to List
-                            </a>
+                        <div class="row">
+                            <div class="col-md-6 text-start" >
+                                <div class="form-group">
+                                    <a asp-action="Index" class="btn btn-secondary">
+                                        <i class="fas fa-arrow-left"></i> Back to List
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <div class="form-group">
+                                    @* <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-info">
+                            <i class="fas fa-eye"></i> View Details
+                        </a> *@
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="fas fa-save"></i> Update Seed
+                                    </button>
+                                </div>
+                            </div>
                         </div>
+                           
                     </form>
                 </div>
             </div>
@@ -112,14 +125,12 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Set minimum date for expiry date to today
             const today = new Date().toISOString().split('T')[0];
             const expiryDateInput = document.getElementById('ExpiryDate');
             if (expiryDateInput) {
                 expiryDateInput.min = today;
             }
 
-            // Form validation
             const form = document.getElementById('editSeedForm');
             form.addEventListener('submit', function(e) {
                 if (!form.checkValidity()) {
@@ -128,18 +139,6 @@
                 }
                 form.classList.add('was-validated');
             });
-
-            // Real-time stock validation
-            const stockInput = document.getElementById('Stock');
-            if (stockInput) {
-                stockInput.addEventListener('input', function() {
-                    if (this.value < 0) {
-                        this.value = 0;
-                    }
-                });
-            }
         });
-
-        
     </script>
 }

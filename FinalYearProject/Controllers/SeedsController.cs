@@ -1,6 +1,7 @@
 ﻿using FinalYearProject.Models;
 using FinalYearProject.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace FinalYearProject.Controllers
 {
@@ -15,34 +16,112 @@ namespace FinalYearProject.Controllers
             _seedService = seedService;
 
         }
-        public async Task<IActionResult> Index()
+
+        private async Task PopulateViewData()
         {
-            var seeds = await _seedService.GetAllSeedsAsync();
-            return View(seeds);
+            var categories = await _seedService.GetAllCategoriesAsync();
+            var agents = await _seedService.GetAllAgentsAsync();
+
+            ViewBag.Categories = new SelectList(categories, "Id", "Name");
+            ViewBag.Agents = new SelectList(agents, "Id", "Name");
         }
+
+        public async Task<IActionResult> Index(string searchTerm, string approvalStatus,
+                                         int? minStock, int? maxStock)
+        {
+            try
+            {
+                // Parse approval status
+                bool? approvalStatusValue = null;
+                if (!string.IsNullOrEmpty(approvalStatus))
+                {
+                    approvalStatusValue = bool.Parse(approvalStatus);
+                }
+
+                // Get filtered seeds
+                var seeds = await _seedService.GetSeedsAsync(
+                    searchTerm: searchTerm,
+                    approvalStatus: approvalStatusValue,
+                    minStock: minStock,
+                    maxStock: maxStock
+                );
+
+                // Pass search parameters to view for maintaining filter state
+                ViewBag.SearchTerm = searchTerm;
+                ViewBag.ApprovalStatus = approvalStatus;
+                ViewBag.MinStock = minStock;
+                ViewBag.MaxStock = maxStock;
+
+                return View(seeds);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error loading seeds: {ex.Message}";
+                return View(new List<Seed>());
+            }
+        }
+
         public async Task<IActionResult> Details(int id)
         {
-            var seed = await _seedService.GetSeedByIdAsync(id);
-            if (seed == null)
+            try
             {
-                return NotFound();
+                var seed = await _seedService.GetSeedWithDetailsAsync(id);
+                if (seed == null)
+                {
+                    TempData["ErrorMessage"] = "Seed not found.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                return View(seed);
             }
-            return View(seed);
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error loading seed details: {ex.Message}";
+                return RedirectToAction(nameof(Index));
+            }
         }
 
-        public IActionResult Create()
-        { 
-            return View();
+        // Controllers/SeedsController.cs
+        // GET: Seeds/Create
+        public async Task<IActionResult> Create()
+        {
+            var viewModel = new SeedCreateViewModel
+            {
+                ExpiryDate = DateTime.Today.AddMonths(6),
+                Approval = false,
+                Stock = 0,
+                Categories = await _seedService.GetAllCategoriesAsync(),
+                Agents = await _seedService.GetAllAgentsAsync()
+            };
+
+            return View(viewModel);
         }
 
+        // POST: Seeds/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Seed seed)
+        public async Task<IActionResult> Create(SeedCreateViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
+                    // Convert ViewModel to Entity
+                    var seed = new Seed
+                    {
+                        Name = viewModel.Name,
+                        Description = viewModel.Description,
+                        Price = viewModel.Price,
+                        Approval = viewModel.Approval,
+                        Stock = viewModel.Stock,
+                        Image = viewModel.Image,
+                        ExpiryDate = viewModel.ExpiryDate,
+                        AgentID = viewModel.AgentID,
+                        CategoryID = viewModel.CategoryID,
+                        CreatedDate = DateTime.Now,
+                        ModifiedDate = DateTime.Now
+                    };
+
                     await _seedService.CreateSeedAsync(seed);
                     TempData["SuccessMessage"] = "Seed created successfully!";
                     return RedirectToAction(nameof(Index));
@@ -53,15 +132,21 @@ namespace FinalYearProject.Controllers
                 }
             }
 
-            return View(seed);
+            // Repopulate dropdown data
+            viewModel.Categories = await _seedService.GetAllCategoriesAsync();
+            viewModel.Agents = await _seedService.GetAllAgentsAsync();
+
+            return View(viewModel);
         }
 
         // GET: Seeds/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
+            await PopulateViewData();
+
             try
             {
-                var seed = await _seedService.GetSeedByIdAsync(id);
+                var seed = await _seedService.GetSeedWithDetailsAsync(id);
                 if (seed == null)
                 {
                     TempData["ErrorMessage"] = "Seed not found.";
@@ -87,6 +172,10 @@ namespace FinalYearProject.Controllers
                 TempData["ErrorMessage"] = "Seed ID mismatch.";
                 return RedirectToAction(nameof(Index));
             }
+
+            // Remove navigation properties from ModelState validation
+            ModelState.Remove("Category");
+            ModelState.Remove("Agent");
 
             if (ModelState.IsValid)
             {

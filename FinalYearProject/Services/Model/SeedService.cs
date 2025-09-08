@@ -22,30 +22,74 @@ namespace FinalYearProject.Services.Model
             }
         }
 
-        public async Task<List<Seed>> GetAllSeedsAsync()
+        public async Task<List<Seed>> GetSeedsAsync(string searchTerm = null, bool? approvalStatus = null,
+                                          int? minStock = null, int? maxStock = null)
         {
             var seeds = new List<Seed>();
+            var query = @"
+        SELECT s.*, a.Name as AgentName, c.Name as CategoryName 
+        FROM Seeds s
+        INNER JOIN Agents a ON s.AgentID = a.Id
+        INNER JOIN Category c ON s.CategoryID = c.Id
+        WHERE 1=1";
 
-            try
+            var parameters = new List<SqlParameter>();
+
+            // Build dynamic WHERE clause
+            if (!string.IsNullOrEmpty(searchTerm))
             {
-                using var connection = new SqlConnection(_connectionString);
+                query += " AND (s.Name LIKE @SearchTerm OR c.Name LIKE @SearchTerm)";
+                parameters.Add(new SqlParameter("@SearchTerm", $"%{searchTerm}%"));
+            }
+
+            if (approvalStatus.HasValue)
+            {
+                query += " AND s.Approval = @ApprovalStatus";
+                parameters.Add(new SqlParameter("@ApprovalStatus", approvalStatus.Value));
+            }
+
+            if (minStock.HasValue)
+            {
+                query += " AND s.Stock >= @MinStock";
+                parameters.Add(new SqlParameter("@MinStock", minStock.Value));
+            }
+
+            if (maxStock.HasValue)
+            {
+                query += " AND s.Stock <= @MaxStock";
+                parameters.Add(new SqlParameter("@MaxStock", maxStock.Value));
+            }
+
+            query += " ORDER BY s.Name";
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
                 await connection.OpenAsync();
 
-                using (var command = new SqlCommand("SELECT * FROM Seeds", connection))
-                using (var reader = await command.ExecuteReaderAsync())
+                using (var command = new SqlCommand(query, connection))
                 {
-                    while (await reader.ReadAsync())
+                    foreach (var param in parameters)
                     {
-                        seeds.Add(MapReaderToSeed(reader));
+                        command.Parameters.Add(param);
+                    }
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var seed = MapReaderToSeed(reader);
+                            // You can add AgentName and CategoryName if needed
+                            seeds.Add(seed);
+                        }
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                _logger.Log(LogLevel.Error, ex, "An error occurred while retrieving all seeds.");   
-            }           
 
             return seeds;
+        }
+        public async Task<List<Seed>> GetAllSeedsAsync()
+        {
+            return await GetSeedsAsync();
         }
 
         public async Task<Seed> GetSeedByIdAsync(int id)
@@ -179,22 +223,127 @@ namespace FinalYearProject.Services.Model
             return seeds;
         }
 
-        private static Seed MapReaderToSeed(SqlDataReader reader)
+        public async Task<Seed> GetSeedWithDetailsAsync(int id)
         {
-            return new Seed
+            using (var connection = new SqlConnection(_connectionString))
             {
-                Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                Name = reader.GetString(reader.GetOrdinal("Name")),
-                Description = reader.GetString(reader.GetOrdinal("Description")),
-                Price = reader.GetDecimal(reader.GetOrdinal("Price")),
-                Approval = reader.GetBoolean(reader.GetOrdinal("Approval")),
-                Stock = reader.GetInt32(reader.GetOrdinal("Stock")),
-                Image = reader.GetString(reader.GetOrdinal("Image")),
-                ExpiryDate = reader.GetDateTime(reader.GetOrdinal("ExpiryDate")),
-                AgentID = reader.GetInt32(reader.GetOrdinal("AgentID")),
-                CategoryID = reader.GetInt32(reader.GetOrdinal("CategoryID"))
-            };
+                await connection.OpenAsync();
+
+                var query = @"
+                SELECT s.*, a.Name as AgentName, a.Email as AgentEmail, a.Phone as AgentPhone,
+                       c.Name as CategoryName, c.Description as CategoryDescription
+                FROM Seeds s
+                INNER JOIN Agents a ON s.AgentID = a.Id
+                INNER JOIN Category c ON s.CategoryID = c.Id
+                WHERE s.Id = @Id";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Id", id);
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        if (await reader.ReadAsync())
+                        {
+                            var seed = MapReaderToSeed(reader);
+
+                            // Add agent details
+                            seed.Agent = new Agent
+                            {
+                                Id = seed.AgentID,
+                                Name = reader.GetString(reader.GetOrdinal("AgentName")),
+                                Email = reader.IsDBNull(reader.GetOrdinal("AgentEmail")) ? null : reader.GetString(reader.GetOrdinal("AgentEmail")),
+                                Phone = reader.IsDBNull(reader.GetOrdinal("AgentPhone")) ? null : reader.GetString(reader.GetOrdinal("AgentPhone"))
+                            };
+
+                            // Add category details
+                            seed.Category = new Category
+                            {
+                                Id = seed.CategoryID,
+                                Name = reader.GetString(reader.GetOrdinal("CategoryName")),
+                                Description = reader.IsDBNull(reader.GetOrdinal("CategoryDescription")) ? null : reader.GetString(reader.GetOrdinal("CategoryDescription"))
+                            };
+
+                            return seed;
+                        }
+                    }
+                }
+            }
+
+            return null;
         }
+
+        public async Task<List<Category>> GetAllCategoriesAsync()
+        {
+            var categories = new List<Category>();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+
+                using (var command = new SqlCommand("SELECT * FROM Category ORDER BY Name", connection))
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        categories.Add(new Category
+                        {
+                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                            Name = reader.GetString(reader.GetOrdinal("Name")),
+                            Description = reader.IsDBNull(reader.GetOrdinal("Description")) ? null : reader.GetString(reader.GetOrdinal("Description")),
+                            CreatedDate = reader.GetDateTime(reader.GetOrdinal("CreatedDate"))
+                        });
+                    }
+                }
+            }
+
+            return categories;
+        }
+
+        public async Task<List<Agent>> GetAllAgentsAsync()
+        {
+            var agents = new List<Agent>();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+
+                using (var command = new SqlCommand("SELECT * FROM Agents ORDER BY Name", connection))
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        agents.Add(new Agent
+                        {
+                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                            Name = reader.GetString(reader.GetOrdinal("Name")),
+                            Email = reader.IsDBNull(reader.GetOrdinal("Email")) ? null : reader.GetString(reader.GetOrdinal("Email")),
+                            Phone = reader.IsDBNull(reader.GetOrdinal("Phone")) ? null : reader.GetString(reader.GetOrdinal("Phone")),
+                            CreatedDate = reader.GetDateTime(reader.GetOrdinal("CreatedDate"))
+                        });
+                    }
+                }
+            }
+
+            return agents;
+        }
+        private Seed MapReaderToSeed(SqlDataReader reader) => new Seed
+        {
+            Id = reader.GetInt32(reader.GetOrdinal("Id")),
+            Name = reader.GetString(reader.GetOrdinal("Name")),
+            Description = reader.IsDBNull(reader.GetOrdinal("Description")) ? string.Empty : reader.GetString(reader.GetOrdinal("Description")),
+            Price = reader.GetDecimal(reader.GetOrdinal("Price")),
+            Approval = reader.GetBoolean(reader.GetOrdinal("Approval")),
+            Stock = reader.GetInt32(reader.GetOrdinal("Stock")),
+            Image = reader.IsDBNull(reader.GetOrdinal("Image")) ? string.Empty : reader.GetString(reader.GetOrdinal("Image")),
+            ExpiryDate = reader.GetDateTime(reader.GetOrdinal("ExpiryDate")),
+            AgentID = reader.GetInt32(reader.GetOrdinal("AgentID")),
+            CategoryID = reader.GetInt32(reader.GetOrdinal("CategoryID")),
+            // Fix: Assign Agent and Category objects to their respective properties
+            Agent =  new Agent { Name = reader.GetString(reader.GetOrdinal("AgentName")) },
+            Category = new Category { Name = reader.GetString(reader.GetOrdinal("CategoryName")) }
+        };
+        
 
         private static void AddSeedParameters(SqlCommand command, Seed seed)
         {
