@@ -102,6 +102,10 @@ namespace FinalYearProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(SeedCreateViewModel viewModel)
         {
+            // Remove navigation properties from ModelState validation
+            ModelState.Remove("Categories");
+            ModelState.Remove("Agents");
+
             if (ModelState.IsValid)
             {
                 try
