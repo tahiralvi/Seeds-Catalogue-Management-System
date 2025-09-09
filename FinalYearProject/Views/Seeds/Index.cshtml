@@ -94,33 +94,20 @@
             <thead class="table-success">
                 <tr>
                     <th><i class="fas fa-seedling"></i> Name</th>
-                    <th><i class="fas fa-tag"></i> Price / kg</th>
-                    <th><i class="fas fa-check-circle"></i> Approval</th>
-                    <th><i class="fas fa-boxes"></i> Stock / Kg</th>
-                    <th><i class="fas fa-calendar-alt"></i> Expiry Date</th>
                     <th><i class="fas fa-layer-group"></i> Category</th>
                     <th><i class="fas fa-user-tie"></i> Agent</th>
+                    <th><i class="fas fa-tag"></i> Price/kg</th>
+                    <th><i class="fas fa-check-circle"></i> Approval</th>
+                    <th><i class="fas fa-boxes"></i> Stock (Kgs)</th>
+                    <th><i class="fas fa-calendar-alt"></i> Expiry Date</th>
                     <th><i class="fas fa-cogs"></i> Actions</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="bg-color-azure">
                 @foreach (var item in Model)
                 {
                     <tr>
                         <td>@Html.DisplayFor(modelItem => item.Name)</td>
-                        <td>@item.Price.ToString("C")</td>
-                        <td>
-                            @if (item.Approval)
-                            {
-                                <span class="badge bg-success">Yes</span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-warning">No</span>
-                            }
-                        </td>
-                        <td>@Html.DisplayFor(modelItem => item.Stock)</td>
-                        <td>@item.ExpiryDate.ToString("d")</td>
                         <td>
                             @if (item.Category != null)
                             {
@@ -141,6 +128,19 @@
                                 <span class="text-muted">N/A</span>
                             }
                         </td>
+                        <td>@item.Price.ToString("C")</td>
+                        <td>
+                            @if (item.Approval)
+                            {
+                                <span class="badge bg-success">Yes</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning">No</span>
+                            }
+                        </td>
+                        <td>@Html.DisplayFor(modelItem => item.Stock)</td>
+                        <td>@item.ExpiryDate.ToString("d")</td>                        
                         <td>
                             <div class="btn-group" role="group">
                                 <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">
