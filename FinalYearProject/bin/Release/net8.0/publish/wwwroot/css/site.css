@@ -191,3 +191,7 @@ body {
         opacity: 0.15;
         z-index: -1;
     }
+
+.bg-color-azure {
+        background-color: #f0f8ff; /* Azure color */
+}
