@@ -2,8 +2,8 @@
 <!-- https://go.microsoft.com/fwlink/?LinkID=208121. -->
 <Project>
   <PropertyGroup>
-    <_PublishTargetUrl>D:\Coding\FinalYearProject\FinalYearProject\bin\Release\net8.0\publish\</_PublishTargetUrl>
-    <History>True|2025-09-09T15:50:21.3510188Z||;True|2025-09-08T03:39:14.7871949-07:00||;True|2025-09-07T23:50:32.2961056-07:00||;True|2025-09-07T12:16:39.6597666-07:00||;True|2025-09-07T10:53:19.5086162-07:00||;True|2025-09-07T10:52:58.8773558-07:00||;True|2025-09-07T10:52:28.2870869-07:00||;</History>
+    <_PublishTargetUrl>D:\Coding\Seeds-Catalogue-Management-System\FinalYearProject\bin\Release\net8.0\publish\</_PublishTargetUrl>
+    <History>True|2025-09-17T16:15:46.2847547Z||;True|2025-09-09T20:50:21.3510188+05:00||;True|2025-09-08T15:39:14.7871949+05:00||;True|2025-09-08T11:50:32.2961056+05:00||;True|2025-09-08T00:16:39.6597666+05:00||;True|2025-09-07T22:53:19.5086162+05:00||;True|2025-09-07T22:52:58.8773558+05:00||;True|2025-09-07T22:52:28.2870869+05:00||;</History>
     <LastFailureDetails />
   </PropertyGroup>
 </Project>
