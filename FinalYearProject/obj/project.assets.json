@@ -5733,11 +5733,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Coding\\FinalYearProject\\FinalYearProject\\FinalYearProject.csproj",
+      "projectUniqueName": "D:\\Coding\\Seeds-Catalogue-Management-System\\FinalYearProject\\FinalYearProject.csproj",
       "projectName": "FinalYearProject",
-      "projectPath": "D:\\Coding\\FinalYearProject\\FinalYearProject\\FinalYearProject.csproj",
+      "projectPath": "D:\\Coding\\Seeds-Catalogue-Management-System\\FinalYearProject\\FinalYearProject.csproj",
       "packagesPath": "C:\\Users\\Tahir\\.nuget\\packages\\",
-      "outputPath": "D:\\Coding\\FinalYearProject\\FinalYearProject\\obj\\",
+      "outputPath": "D:\\Coding\\Seeds-Catalogue-Management-System\\FinalYearProject\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -5804,7 +5804,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
