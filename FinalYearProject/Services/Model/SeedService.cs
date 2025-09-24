@@ -27,11 +27,11 @@ namespace FinalYearProject.Services.Model
         {
             var seeds = new List<Seed>();
             var query = @"
-        SELECT s.*, a.Name as AgentName, c.Name as CategoryName 
-        FROM Seeds s
-        INNER JOIN Agents a ON s.AgentID = a.Id
-        INNER JOIN Category c ON s.CategoryID = c.Id
-        WHERE 1=1";
+                        SELECT s.*, a.Name as AgentName, c.Name as CategoryName 
+                        FROM Seeds s
+                        INNER JOIN Agents a ON s.AgentID = a.Id
+                        INNER JOIN Category c ON s.CategoryID = c.Id
+                        WHERE 1=1";
 
             var parameters = new List<SqlParameter>();
 
@@ -122,9 +122,9 @@ namespace FinalYearProject.Services.Model
                 await connection.OpenAsync();
 
                 using (var command = new SqlCommand(
-                    @"INSERT INTO Seeds (Name, Description, Price, Approval, Stock, Image, ExpiryDate, AgentID, CategoryID) 
-                  OUTPUT INSERTED.Id 
-                  VALUES (@Name, @Description, @Price, @Approval, @Stock, @Image, @ExpiryDate, @AgentID, @CategoryID)",
+                    @"  INSERT INTO Seeds (Name, Description, Price, Approval, Stock, Image, ExpiryDate, AgentID, CategoryID) 
+                        OUTPUT INSERTED.Id 
+                        VALUES (@Name, @Description, @Price, @Approval, @Stock, @Image, @ExpiryDate, @AgentID, @CategoryID)",
                     connection))
                 {
                     AddSeedParameters(command, seed);
@@ -142,16 +142,16 @@ namespace FinalYearProject.Services.Model
 
                 using (var command = new SqlCommand(
                     @"UPDATE Seeds 
-                    SET Name = @Name, 
-                        Description = @Description, 
-                        Price = @Price, 
-                        Approval = @Approval, 
-                        Stock = @Stock, 
-                        Image = @Image, 
-                        ExpiryDate = @ExpiryDate, 
-                        AgentID = @AgentID, 
-                        CategoryID = @CategoryID
-                  WHERE Id = @Id",
+                        SET Name = @Name, 
+                            Description = @Description, 
+                            Price = @Price, 
+                            Approval = @Approval, 
+                            Stock = @Stock, 
+                            Image = @Image, 
+                            ExpiryDate = @ExpiryDate, 
+                            AgentID = @AgentID, 
+                            CategoryID = @CategoryID
+                      WHERE Id = @Id",
                     connection))
                 {
                     command.Parameters.AddWithValue("@Id", seed.Id);
@@ -230,12 +230,12 @@ namespace FinalYearProject.Services.Model
                 await connection.OpenAsync();
 
                 var query = @"
-                SELECT s.*, a.Name as AgentName, a.Email as AgentEmail, a.Phone as AgentPhone,
-                       c.Name as CategoryName, c.Description as CategoryDescription
-                FROM Seeds s
-                INNER JOIN Agents a ON s.AgentID = a.Id
-                INNER JOIN Category c ON s.CategoryID = c.Id
-                WHERE s.Id = @Id";
+                            SELECT s.*, a.Name as AgentName, a.Email as AgentEmail, a.Phone as AgentPhone,
+                                    c.Name as CategoryName, c.Description as CategoryDescription
+                            FROM Seeds s
+                            INNER JOIN Agents a ON s.AgentID = a.Id
+                            INNER JOIN Category c ON s.CategoryID = c.Id
+                            WHERE s.Id = @Id";
 
                 using (var command = new SqlCommand(query, connection))
                 {
