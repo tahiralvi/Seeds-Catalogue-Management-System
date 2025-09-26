@@ -15,16 +15,7 @@ namespace FinalYearProject.Controllers
             _logger = logger;
             _seedService = seedService;
 
-        }
-
-        private async Task PopulateViewData()
-        {
-            var categories = await _seedService.GetAllCategoriesAsync();
-            var agents = await _seedService.GetAllAgentsAsync();
-
-            ViewBag.Categories = new SelectList(categories, "Id", "Name");
-            ViewBag.Agents = new SelectList(agents, "Id", "Name");
-        }
+        }        
 
         public async Task<IActionResult> Index(string searchTerm, string approvalStatus,
                                          int? minStock, int? maxStock)
@@ -226,5 +217,16 @@ namespace FinalYearProject.Controllers
         //    await _seedService.DeleteSeedAsync(id);
         //    return RedirectToAction(nameof(Index));
         //}
+
+        #region Private methods
+        private async Task PopulateViewData()
+        {
+            var categories = await _seedService.GetAllCategoriesAsync();
+            var agents = await _seedService.GetAllAgentsAsync();
+
+            ViewBag.Categories = new SelectList(categories, "Id", "Name");
+            ViewBag.Agents = new SelectList(agents, "Id", "Name");
+        }
+        #endregion
     }
 }
