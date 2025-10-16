@@ -200,23 +200,23 @@ namespace FinalYearProject.Controllers
             return View(seed);
         }
 
-        //public async Task<IActionResult> Delete(int id)
-        //{
-        //    var seed = await _seedService.GetSeedByIdAsync(id);
-        //    if (seed == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return View(seed);
-        //}
+        public async Task<IActionResult> Delete(int id)
+        {
+            var seed = await _seedService.GetSeedByIdAsync(id);
+            if (seed == null)
+            {
+                return NotFound();
+            }
+            return View(seed);
+        }
 
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(int id)
-        //{
-        //    await _seedService.DeleteSeedAsync(id);
-        //    return RedirectToAction(nameof(Index));
-        //}
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            await _seedService.DeleteSeedAsync(id);
+            return RedirectToAction(nameof(Index));
+        }
 
         #region Private methods
         private async Task PopulateViewData()
