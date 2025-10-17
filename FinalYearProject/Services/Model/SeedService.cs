@@ -122,9 +122,9 @@ namespace FinalYearProject.Services.Model
                 await connection.OpenAsync();
 
                 using (var command = new SqlCommand(
-                    @"  INSERT INTO Seeds (Name, Description, Price, Approval, Stock, Image, ExpiryDate, AgentID, CategoryID) 
+                    @"  INSERT INTO Seeds (Name, Description, Price, Approval, Stock, Image, ExpiryDate, AgentID, CategoryID, CreatedDate, ModifiedDate) 
                         OUTPUT INSERTED.Id 
-                        VALUES (@Name, @Description, @Price, @Approval, @Stock, @Image, @ExpiryDate, @AgentID, @CategoryID)",
+                        VALUES (@Name, @Description, @Price, @Approval, @Stock, @Image, @ExpiryDate, @AgentID, @CategoryID, GETDATE(), GETDATE())",
                     connection))
                 {
                     AddSeedParameters(command, seed);
@@ -150,7 +150,8 @@ namespace FinalYearProject.Services.Model
                             Image = @Image, 
                             ExpiryDate = @ExpiryDate, 
                             AgentID = @AgentID, 
-                            CategoryID = @CategoryID
+                            CategoryID = @CategoryID,
+                            ModifiedDate = GETDATE()
                       WHERE Id = @Id",
                     connection))
                 {
@@ -337,6 +338,8 @@ namespace FinalYearProject.Services.Model
             Stock = reader.GetInt32(reader.GetOrdinal("Stock")),
             Image = reader.IsDBNull(reader.GetOrdinal("Image")) ? string.Empty : reader.GetString(reader.GetOrdinal("Image")),
             ExpiryDate = reader.GetDateTime(reader.GetOrdinal("ExpiryDate")),
+            CreatedDate = reader.GetDateTime(reader.GetOrdinal("CreatedDate")),
+            ModifiedDate = reader.GetDateTime(reader.GetOrdinal("ModifiedDate")),
             AgentID = reader.GetInt32(reader.GetOrdinal("AgentID")),
             CategoryID = reader.GetInt32(reader.GetOrdinal("CategoryID")),
             // Fix: Assign Agent and Category objects to their respective properties
