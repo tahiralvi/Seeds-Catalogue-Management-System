@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FinalYearProject.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FinalYearProject.Controllers
 {
@@ -8,5 +9,16 @@ namespace FinalYearProject.Controllers
         {
             return View();
         }
+        public IActionResult Register()
+        {
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async IActionResult Register(SeedAgentCreateViewModel viewModel)
+        {
+            return View(viewModel);
+        }
+
     }
 }
