@@ -11,8 +11,9 @@ builder.Services.AddControllersWithViews();
 builder.Services.Configure<DatabaseSettings>(
     builder.Configuration.GetSection("DatabaseSettings"));
 
-// Register the SeedService
+// Register the Services
 builder.Services.AddScoped<ISeedService, SeedService>();
+builder.Services.AddScoped<IAgentService, AgentService>();
 
 var app = builder.Build();
 
