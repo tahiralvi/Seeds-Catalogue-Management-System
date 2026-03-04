@@ -1,0 +1,32 @@
+﻿@model IEnumerable<FinalYearProject.Models.Category>
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between">
+        <h2>Seed Categories</h2>
+        <a asp-action="Create" class="btn btn-primary">Add New Category</a>
+    </div>
+    <table class="table mt-3">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Created</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.Description</td>
+                    <td>@item.CreatedDate.ToShortDateString()</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger" onclick="return confirm('Delete this category?')">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

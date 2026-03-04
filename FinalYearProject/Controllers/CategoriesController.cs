@@ -1,12 +1,60 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FinalYearProject.Models;
+using FinalYearProject.Services.Model; // Ensure this matches your namespace
+using Microsoft.AspNetCore.Mvc;
 
 namespace FinalYearProject.Controllers
 {
     public class CategoriesController : Controller
     {
-        public IActionResult Index()
+        private readonly ILogger<SeedsController> _logger;
+        private readonly CategoryService _categoryService;
+
+        public CategoriesController(CategoryService categoryService, ILogger<SeedsController> logger)
         {
-            return View();
+            _categoryService = categoryService;
+            _logger = logger;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            var list = await _categoryService.GetAllCategoriesAsync();
+            return View(list);
+        }
+
+        public IActionResult Create() => View();
+
+        [HttpPost]
+        public async Task<IActionResult> Create(Category category)
+        {
+            if (ModelState.IsValid)
+            {
+                await _categoryService.CreateCategoryAsync(category);
+                return RedirectToAction(nameof(Index));
+            }
+            return View(category);
+        }
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            var cat = await _categoryService.GetCategoryByIdAsync(id);
+            return cat == null ? NotFound() : View(cat);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(Category category)
+        {
+            if (ModelState.IsValid)
+            {
+                await _categoryService.UpdateCategoryAsync(category);
+                return RedirectToAction(nameof(Index));
+            }
+            return View(category);
+        }
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            await _categoryService.DeleteCategoryAsync(id);
+            return RedirectToAction(nameof(Index));
         }
     }
 }
