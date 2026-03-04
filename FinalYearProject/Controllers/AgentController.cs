@@ -34,13 +34,30 @@ namespace FinalYearProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(Agent agent)
         {
+            // The Seeds collection is not required for initial registration
             if (ModelState.IsValid)
             {
-                agent.CreatedDate = DateTime.Now;
-                int newId = await _agentService.CreateAgentAsync(agent);
+                try
+                {
+                    // Assign the current timestamp as the registration date
+                    agent.CreatedDate = DateTime.Now;
 
-                if (newId > 0) return RedirectToAction("Index", "Home");
+                    // Call the service to perform the ADO.NET INSERT operation
+                    int newId = await _agentService.CreateAgentAsync(agent);
+
+                    if (newId > 0)
+                    {
+                        return RedirectToAction(nameof(Index));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error occurred during agent registration.");
+                    ModelState.AddModelError("", "Unable to save changes. Try again later.");
+                }
             }
+
+            // If we got this far, something failed; redisplay the form with errors
             return View(agent);
         }
 
