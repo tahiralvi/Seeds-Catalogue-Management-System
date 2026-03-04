@@ -1,15 +1,15 @@
-﻿using SeedsProject.Services.Model;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SeedsProject.Models;
+using SeedsProject.Services.Interface;
 
 namespace SeedsProject.Controllers
 {
     public class CategoriesController : Controller
     {
         private readonly ILogger<SeedsController> _logger;
-        private readonly CategoryService _categoryService;
+        private readonly ICategoryService _categoryService;
 
-        public CategoriesController(CategoryService categoryService, ILogger<SeedsController> logger)
+        public CategoriesController(ICategoryService categoryService, ILogger<SeedsController> logger)
         {
             _categoryService = categoryService;
             _logger = logger;
@@ -17,7 +17,7 @@ namespace SeedsProject.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var list = await _categoryService.GetAllCategoriesAsync();
+            var list = await _categoryService.GetAllCategoryAsync();
             _logger.Log(LogLevel.Information, $"List Count {list.Count}", list);
             return View(list);
         }

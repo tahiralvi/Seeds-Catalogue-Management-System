@@ -1,7 +1,6 @@
 ﻿using SeedsProject.Services.Interface;
 using Microsoft.Extensions.Options;
 using SeedsProject.Models;
-using System.Data;
 using System.Data.SqlClient;
 
 namespace SeedsProject.Services.Model
@@ -17,10 +16,10 @@ namespace SeedsProject.Services.Model
             _logger = logger;   
         }
 
-        public async Task<List<Category>> GetAllCategoriesAsync()
+        public async Task<List<Category>> GetAllCategoryAsync()
         {
             var categories = new List<Category>();
-            const string query = "SELECT Id, Name, Description, CreatedDate FROM Categories";
+            const string query = "SELECT Id, Name, Description, CreatedDate FROM Category";
 
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
@@ -47,7 +46,7 @@ namespace SeedsProject.Services.Model
 
         public async Task<int> CreateCategoryAsync(Category category)
         {
-            const string query = "INSERT INTO Categories (Name, Description, CreatedDate) VALUES (@Name, @Description, @CreatedDate); SELECT SCOPE_IDENTITY();";
+            const string query = "INSERT INTO Category (Name, Description, CreatedDate) VALUES (@Name, @Description, @CreatedDate); SELECT SCOPE_IDENTITY();";
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 using (SqlCommand cmd = new SqlCommand(query, conn))
@@ -63,7 +62,7 @@ namespace SeedsProject.Services.Model
 
         public async Task<int> UpdateCategoryAsync(Category category)
         {
-            const string query = "UPDATE Categories SET Name = @Name, Description = @Description WHERE Id = @Id";
+            const string query = "UPDATE Category SET Name = @Name, Description = @Description WHERE Id = @Id";
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 using (SqlCommand cmd = new SqlCommand(query, conn))
@@ -79,7 +78,7 @@ namespace SeedsProject.Services.Model
 
         public async Task<int> DeleteCategoryAsync(int id)
         {
-            const string query = "DELETE FROM Categories WHERE Id = @Id";
+            const string query = "DELETE FROM Category WHERE Id = @Id";
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 using (SqlCommand cmd = new SqlCommand(query, conn))
@@ -93,7 +92,7 @@ namespace SeedsProject.Services.Model
 
         public async Task<Category> GetCategoryByIdAsync(int id)
         {
-            const string query = "SELECT * FROM Categories WHERE Id = @Id";
+            const string query = "SELECT * FROM Category WHERE Id = @Id";
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 using (SqlCommand cmd = new SqlCommand(query, conn))
