@@ -1,0 +1,54 @@
+﻿@model FinalYearProject.Models.Agent
+
+@{
+    ViewData["Title"] = "Agent Details";
+}
+
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-info text-white d-flex justify-content-between">
+            <h3 class="mb-0">Agent Profile</h3>
+            <a asp-action="Index" class="btn btn-light btn-sm">Back to List</a>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <p><strong>Name:</strong> @Model.Name</p>
+                    <p><strong>Email:</strong> @Model.Email</p>
+                </div>
+                <div class="col-md-4">
+                    <p><strong>Phone:</strong> @(Model.Phone ?? "N/A")</p>
+                    <p><strong>Joined:</strong> @Model.CreatedDate.ToShortDateString()</p>
+                </div>
+            </div>
+
+            <hr />
+
+            <h4>Assigned Seeds</h4>
+            @if (Model.Seeds != null && Model.Seeds.Any())
+            {
+                <table class="table table-sm table-striped mt-3">
+                    <thead>
+                        <tr>
+                            <th>Seed ID</th>
+                            <th>Seed Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var seed in Model.Seeds)
+                        {
+                            <tr>
+                                <td>@seed.Id</td>
+                                <td>@seed.Name</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="alert alert-warning">No seeds assigned to this agent yet.</div>
+            }
+        </div>
+    </div>
+</div>

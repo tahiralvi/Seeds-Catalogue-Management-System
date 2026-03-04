@@ -1,16 +1,15 @@
 ﻿using FinalYearProject.Models;
 using FinalYearProject.Services.Interface;
-using FinalYearProject.Services.Model;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FinalYearProject.Controllers
 {
-    public class AccountController : Controller
+    public class AgentController : Controller
     {
-        private readonly ILogger<AccountController> _logger;
+        private readonly ILogger<AgentController> _logger;
         private readonly IAgentService _agentService;
 
-        public AccountController(ILogger<AccountController> logger, IAgentService agentService)
+        public AgentController(ILogger<AgentController> logger, IAgentService agentService)
         {
             _logger = logger;
             _agentService = agentService;
@@ -42,6 +41,19 @@ namespace FinalYearProject.Controllers
 
                 if (newId > 0) return RedirectToAction("Index", "Home");
             }
+            return View(agent);
+        }
+
+        // GET: Account/Details/5
+        public async Task<IActionResult> Details(int id)
+        {
+            var agent = await _agentService.GetAgentWithDetailsAsync(id);
+
+            if (agent == null)
+            {
+                return NotFound();
+            }
+
             return View(agent);
         }
 

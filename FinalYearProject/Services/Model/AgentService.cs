@@ -119,12 +119,58 @@ namespace FinalYearProject.Services.Model
             }
         }
 
-        public Task<Agent> GetAgentWithDetailsAsync(int id)
+        public async Task<Agent> GetAgentWithDetailsAsync(int id)
         {
-            // Note: Implementing deep joins in raw ADO.NET requires complex manual mapping 
-            // of the Seeds collection. For brevity, this is often handled by a second query 
-            // or a complex JOIN with a while(reader.Read()) logic.
-            throw new NotImplementedException("Complex join mapping requires manual Seed collection population.");
+            const string query = @"
+                                SELECT a.Id, a.Name, a.Email, a.Phone, a.CreatedDate,
+                                       s.Id AS SeedId, s.Name AS SeedName, s.AgentId
+                                FROM Agents a
+                                LEFT JOIN Seeds s ON a.Id = s.AgentId
+                                WHERE a.Id = @Id";
+
+            Agent agent = null;
+
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@Id", id);
+                    await conn.OpenAsync();
+
+                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            // 1. Create the Agent object only once (on the first row)
+                            if (agent == null)
+                            {
+                                agent = new Agent
+                                {
+                                    Id = Convert.ToInt32(reader["Id"]),
+                                    Name = reader["Name"].ToString(),
+                                    Email = reader["Email"].ToString(),
+                                    Phone = reader["Phone"]?.ToString(),
+                                    CreatedDate = Convert.ToDateTime(reader["CreatedDate"]),
+                                    Seeds = new List<Seed>() // Initialize the collection
+                                };
+                            }
+
+                            // 2. If a Seed exists in this row, add it to the collection
+                            if (reader["SeedId"] != DBNull.Value)
+                            {
+                                var seed = new Seed
+                                {
+                                    Id = Convert.ToInt32(reader["SeedId"]),
+                                    Name = reader["SeedName"].ToString(),
+                                    AgentID = Convert.ToInt32(reader["AgentID"])
+                                };
+                                agent.Seeds.Add(seed);
+                            }
+                        }
+                    }
+                }
+            }
+            return agent;
         }
 
         // Helper method to keep code DRY
