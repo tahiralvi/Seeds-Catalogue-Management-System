@@ -15,7 +15,7 @@ namespace FinalYearProject.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async IActionResult Register(SeedAgentCreateViewModel viewModel)
+        public async Task<IActionResult> Register(SeedAgentCreateViewModel viewModel)
         {
             return View(viewModel);
         }
