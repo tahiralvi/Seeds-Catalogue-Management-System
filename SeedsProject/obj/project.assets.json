@@ -5733,11 +5733,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Coding\\Seeds-Catalogue-Management-System\\FinalYearProject\\SeedsProject.csproj",
+      "projectUniqueName": "D:\\Coding\\Seeds-Catalogue-Management-System\\SeedsProject\\SeedsProject.csproj",
       "projectName": "SeedsProject",
-      "projectPath": "D:\\Coding\\Seeds-Catalogue-Management-System\\FinalYearProject\\SeedsProject.csproj",
+      "projectPath": "D:\\Coding\\Seeds-Catalogue-Management-System\\SeedsProject\\SeedsProject.csproj",
       "packagesPath": "C:\\Users\\alvij\\.nuget\\packages\\",
-      "outputPath": "D:\\Coding\\Seeds-Catalogue-Management-System\\FinalYearProject\\obj\\",
+      "outputPath": "D:\\Coding\\Seeds-Catalogue-Management-System\\SeedsProject\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
