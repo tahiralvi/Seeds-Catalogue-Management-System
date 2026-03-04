@@ -16,10 +16,15 @@ namespace FinalYearProject.Controllers
             _agentService = agentService;
 
         }
-        public IActionResult Index()
+
+        // GET: Account/Index
+        public async Task<IActionResult> Index()
         {
-            return View();
+            // Fetch all agents using the implemented ADO.NET service
+            var agents = await _agentService.GetAllAgentsAsync();
+            return View(agents);
         }
+
         // GET: Account/Register
         public IActionResult Register()
         {
@@ -28,16 +33,14 @@ namespace FinalYearProject.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register([Bind("Name,Email,Phone")] Agent agent)
+        public async Task<IActionResult> Register(Agent agent)
         {
             if (ModelState.IsValid)
             {
-                // Set the system-generated date
                 agent.CreatedDate = DateTime.Now;
+                int newId = await _agentService.CreateAgentAsync(agent);
 
-                await _agentService.CreateAgentAsync(agent);
-                TempData["SuccessMessage"] = "Seed created successfully!";
-                return RedirectToAction("Index", "Home");
+                if (newId > 0) return RedirectToAction("Index", "Home");
             }
             return View(agent);
         }

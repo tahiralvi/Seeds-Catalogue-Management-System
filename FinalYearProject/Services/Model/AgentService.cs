@@ -1,8 +1,6 @@
 ﻿using FinalYearProject.Models;
 using FinalYearProject.Services.Interface;
-using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
-using System.Data;
 using System.Data.SqlClient;
 
 namespace FinalYearProject.Services.Model
