@@ -74,5 +74,33 @@ namespace FinalYearProject.Controllers
             return View(agent);
         }
 
+        // GET: Agent/Delete/5
+        public async Task<IActionResult> Delete(int id)
+        {
+            var agent = await _agentService.GetAgentByIdAsync(id);
+            if (agent == null)
+            {
+                return NotFound();
+            }
+            return View(agent);
+        }
+
+        // POST: Agent/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            try
+            {
+                await _agentService.DeleteAgentAsync(id);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting agent with ID {Id}", id);
+                return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });
+            }
+        }
+
     }
 }

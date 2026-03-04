@@ -114,6 +114,8 @@ namespace FinalYearProject.Services.Model
                 {
                     cmd.Parameters.AddWithValue("@Id", id);
                     await conn.OpenAsync();
+
+                    // Returns the number of rows affected (1 if successful)
                     return await cmd.ExecuteNonQueryAsync();
                 }
             }
