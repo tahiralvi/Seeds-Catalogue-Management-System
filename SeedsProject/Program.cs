@@ -14,6 +14,7 @@ builder.Services.Configure<DatabaseSettings>(
 // Register the Services
 builder.Services.AddScoped<ISeedService, SeedService>();
 builder.Services.AddScoped<IAgentService, AgentService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 var app = builder.Build();
 
