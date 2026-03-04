@@ -1,5 +1,5 @@
 ﻿using FinalYearProject.Models;
-using FinalYearProject.Services.Model; // Ensure this matches your namespace
+using FinalYearProject.Services.Model; 
 using Microsoft.AspNetCore.Mvc;
 
 namespace FinalYearProject.Controllers
@@ -18,6 +18,7 @@ namespace FinalYearProject.Controllers
         public async Task<IActionResult> Index()
         {
             var list = await _categoryService.GetAllCategoriesAsync();
+            _logger.Log(LogLevel.Information, $"List Count {list.Count}", list);
             return View(list);
         }
 

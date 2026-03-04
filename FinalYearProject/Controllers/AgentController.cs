@@ -16,7 +16,7 @@ namespace FinalYearProject.Controllers
 
         }
 
-        // GET: Account/Index
+        // GET: Agent/Index
         public async Task<IActionResult> Index()
         {
             // Fetch all agents using the implemented ADO.NET service
@@ -24,7 +24,7 @@ namespace FinalYearProject.Controllers
             return View(agents);
         }
 
-        // GET: Account/Register
+        // GET: Agent/Register
         public IActionResult Register()
         {
             return View();
