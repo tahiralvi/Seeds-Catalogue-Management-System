@@ -1,8 +1,8 @@
 using System.Diagnostics;
-using FinalYearProject.Models;
+using SeedsProject.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FinalYearProject.Controllers
+namespace SeedsProject.Controllers
 {
     public class HomeController : Controller
     {

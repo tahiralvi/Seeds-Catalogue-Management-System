@@ -1,8 +1,8 @@
-﻿using FinalYearProject.Models;
-using FinalYearProject.Services.Interface;
+﻿using SeedsProject.Models;
+using SeedsProject.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FinalYearProject.Controllers
+namespace SeedsProject.Controllers
 {
     public class AgentController : Controller
     {

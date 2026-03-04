@@ -1,6 +1,6 @@
-using FinalYearProject.Models;
-using FinalYearProject.Services.Interface;
-using FinalYearProject.Services.Model;
+using SeedsProject.Services.Interface;
+using SeedsProject.Services.Model;
+using SeedsProject.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -1,4 +1,6 @@
-﻿namespace FinalYearProject.Models
+﻿using SeedsProject.Models;
+
+namespace SeedsProject.Models
 {
     public class Category
     {

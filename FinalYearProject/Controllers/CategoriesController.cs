@@ -1,8 +1,8 @@
-﻿using FinalYearProject.Models;
-using FinalYearProject.Services.Model; 
+﻿using SeedsProject.Services.Model;
 using Microsoft.AspNetCore.Mvc;
+using SeedsProject.Models;
 
-namespace FinalYearProject.Controllers
+namespace SeedsProject.Controllers
 {
     public class CategoriesController : Controller
     {

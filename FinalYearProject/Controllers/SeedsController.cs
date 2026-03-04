@@ -1,9 +1,9 @@
-﻿using FinalYearProject.Models;
-using FinalYearProject.Services.Interface;
+﻿using SeedsProject.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using SeedsProject.Models;
 
-namespace FinalYearProject.Controllers
+namespace SeedsProject.Controllers
 {
     public class SeedsController : Controller
     {

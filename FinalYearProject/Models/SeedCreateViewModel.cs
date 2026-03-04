@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace FinalYearProject.Models;
+namespace SeedsProject.Models;
 
 public class SeedCreateViewModel
 {

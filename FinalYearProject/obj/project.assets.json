@@ -5733,9 +5733,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Coding\\Seeds-Catalogue-Management-System\\FinalYearProject\\FinalYearProject.csproj",
-      "projectName": "FinalYearProject",
-      "projectPath": "D:\\Coding\\Seeds-Catalogue-Management-System\\FinalYearProject\\FinalYearProject.csproj",
+      "projectUniqueName": "D:\\Coding\\Seeds-Catalogue-Management-System\\FinalYearProject\\SeedsProject.csproj",
+      "projectName": "SeedsProject",
+      "projectPath": "D:\\Coding\\Seeds-Catalogue-Management-System\\FinalYearProject\\SeedsProject.csproj",
       "packagesPath": "C:\\Users\\alvij\\.nuget\\packages\\",
       "outputPath": "D:\\Coding\\Seeds-Catalogue-Management-System\\FinalYearProject\\obj\\",
       "projectStyle": "PackageReference",

@@ -1,9 +1,9 @@
-﻿using FinalYearProject.Models;
-using FinalYearProject.Services.Interface;
+﻿using SeedsProject.Services.Interface;
 using Microsoft.Extensions.Options;
+using SeedsProject.Models;
 using System.Data.SqlClient;
 
-namespace FinalYearProject.Services.Model
+namespace SeedsProject.Services.Model
 {
     public class AgentService : IAgentService
     {

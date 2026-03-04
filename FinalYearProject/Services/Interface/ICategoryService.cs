@@ -1,6 +1,6 @@
-﻿using FinalYearProject.Models;
+﻿using SeedsProject.Models;
 
-namespace FinalYearProject.Services.Interface
+namespace SeedsProject.Services.Interface
 {
     public interface ICategoryService
     {

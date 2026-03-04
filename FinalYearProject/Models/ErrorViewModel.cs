@@ -1,4 +1,4 @@
-namespace FinalYearProject.Models
+namespace SeedsProject.Models
 {
     public class ErrorViewModel
     {
