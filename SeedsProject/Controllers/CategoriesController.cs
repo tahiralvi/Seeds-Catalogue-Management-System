@@ -57,5 +57,12 @@ namespace SeedsProject.Controllers
             await _categoryService.DeleteCategoryAsync(id);
             return RedirectToAction(nameof(Index));
         }
+
+        // Added: View details of a single category
+        public async Task<IActionResult> Details(int id)
+        {
+            var category = await _categoryService.GetCategoryByIdAsync(id);
+            return category == null ? NotFound() : View(category);
+        }
     }
 }
