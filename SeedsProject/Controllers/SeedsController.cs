@@ -1,7 +1,7 @@
-﻿using SeedsProject.Services.Interface;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SeedsProject.Models;
+using SeedsProject.Services.Interface;
 
 namespace SeedsProject.Controllers
 {
@@ -14,8 +14,7 @@ namespace SeedsProject.Controllers
         {
             _logger = logger;
             _seedService = seedService;
-
-        }        
+        }
 
         public async Task<IActionResult> Index(string searchTerm, string approvalStatus,
                                          int? minStock, int? maxStock)
@@ -219,6 +218,7 @@ namespace SeedsProject.Controllers
         }
 
         #region Private methods
+
         private async Task PopulateViewData()
         {
             var categories = await _seedService.GetAllCategoriesAsync();
@@ -227,6 +227,7 @@ namespace SeedsProject.Controllers
             ViewBag.Categories = new SelectList(categories, "Id", "Name");
             ViewBag.Agents = new SelectList(agents, "Id", "Name");
         }
-        #endregion
+
+        #endregion Private methods
     }
 }

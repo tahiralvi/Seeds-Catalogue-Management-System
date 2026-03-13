@@ -1,6 +1,6 @@
-using System.Diagnostics;
-using SeedsProject.Models;
 using Microsoft.AspNetCore.Mvc;
+using SeedsProject.Models;
+using System.Diagnostics;
 
 namespace SeedsProject.Controllers
 {
