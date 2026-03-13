@@ -1,6 +1,6 @@
-﻿using SeedsProject.Services.Interface;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using SeedsProject.Models;
+using SeedsProject.Services.Interface;
 using System.Data.SqlClient;
 
 namespace SeedsProject.Services.Model
@@ -27,7 +27,7 @@ namespace SeedsProject.Services.Model
         {
             var seeds = new List<Seed>();
             var query = @"
-                        SELECT s.*, a.Name as AgentName, c.Name as CategoryName 
+                        SELECT s.*, a.Name as AgentName, c.Name as CategoryName
                         FROM Seeds s
                         INNER JOIN Agents a ON s.AgentID = a.Id
                         INNER JOIN Category c ON s.CategoryID = c.Id
@@ -87,6 +87,7 @@ namespace SeedsProject.Services.Model
 
             return seeds;
         }
+
         public async Task<List<Seed>> GetAllSeedsAsync()
         {
             return await GetSeedsAsync();
@@ -122,8 +123,8 @@ namespace SeedsProject.Services.Model
                 await connection.OpenAsync();
 
                 using (var command = new SqlCommand(
-                    @"  INSERT INTO Seeds (Name, Description, Price, Approval, Stock, Image, ExpiryDate, AgentID, CategoryID, CreatedDate, ModifiedDate) 
-                        OUTPUT INSERTED.Id 
+                    @"  INSERT INTO Seeds (Name, Description, Price, Approval, Stock, Image, ExpiryDate, AgentID, CategoryID, CreatedDate, ModifiedDate)
+                        OUTPUT INSERTED.Id
                         VALUES (@Name, @Description, @Price, @Approval, @Stock, @Image, @ExpiryDate, @AgentID, @CategoryID, GETDATE(), GETDATE())",
                     connection))
                 {
@@ -141,15 +142,15 @@ namespace SeedsProject.Services.Model
                 await connection.OpenAsync();
 
                 using (var command = new SqlCommand(
-                    @"UPDATE Seeds 
-                        SET Name = @Name, 
-                            Description = @Description, 
-                            Price = @Price, 
-                            Approval = @Approval, 
-                            Stock = @Stock, 
-                            Image = @Image, 
-                            ExpiryDate = @ExpiryDate, 
-                            AgentID = @AgentID, 
+                    @"UPDATE Seeds
+                        SET Name = @Name,
+                            Description = @Description,
+                            Price = @Price,
+                            Approval = @Approval,
+                            Stock = @Stock,
+                            Image = @Image,
+                            ExpiryDate = @ExpiryDate,
+                            AgentID = @AgentID,
                             CategoryID = @CategoryID,
                             ModifiedDate = GETDATE()
                       WHERE Id = @Id",
@@ -328,6 +329,7 @@ namespace SeedsProject.Services.Model
 
             return agents;
         }
+
         private Seed MapReaderToSeed(SqlDataReader reader) => new Seed
         {
             Id = reader.GetInt32(reader.GetOrdinal("Id")),
@@ -343,10 +345,9 @@ namespace SeedsProject.Services.Model
             AgentID = reader.GetInt32(reader.GetOrdinal("AgentID")),
             CategoryID = reader.GetInt32(reader.GetOrdinal("CategoryID")),
             // Fix: Assign Agent and Category objects to their respective properties
-            Agent =  new Agent { Name = reader.GetString(reader.GetOrdinal("AgentName")) },
+            Agent = new Agent { Name = reader.GetString(reader.GetOrdinal("AgentName")) },
             Category = new Category { Name = reader.GetString(reader.GetOrdinal("CategoryName")) }
         };
-        
 
         private static void AddSeedParameters(SqlCommand command, Seed seed)
         {

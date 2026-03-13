@@ -1,11 +1,11 @@
-﻿using SeedsProject.Services.Interface;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using SeedsProject.Models;
+using SeedsProject.Services.Interface;
 using System.Data.SqlClient;
 
 namespace SeedsProject.Services.Model
 {
-    public class CategoryService: ICategoryService
+    public class CategoryService : ICategoryService
     {
         private readonly string _connectionString;
         private readonly ILogger<CategoryService> _logger;
@@ -13,7 +13,7 @@ namespace SeedsProject.Services.Model
         public CategoryService(IOptions<DatabaseSettings> databaseSettings, ILogger<CategoryService> logger)
         {
             _connectionString = databaseSettings.Value.DefaultConnection;
-            _logger = logger;   
+            _logger = logger;
         }
 
         public async Task<List<Category>> GetAllCategoryAsync()

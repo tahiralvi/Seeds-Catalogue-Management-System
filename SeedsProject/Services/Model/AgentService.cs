@@ -1,6 +1,6 @@
-﻿using SeedsProject.Services.Interface;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using SeedsProject.Models;
+using SeedsProject.Services.Interface;
 using System.Data.SqlClient;
 
 namespace SeedsProject.Services.Model

@@ -1,6 +1,6 @@
-﻿using SeedsProject.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using SeedsProject.Models;
 using SeedsProject.Services.Interface;
-using Microsoft.AspNetCore.Mvc;
 
 namespace SeedsProject.Controllers
 {
@@ -13,7 +13,6 @@ namespace SeedsProject.Controllers
         {
             _logger = logger;
             _agentService = agentService;
-
         }
 
         // GET: Agent/Index
@@ -101,6 +100,5 @@ namespace SeedsProject.Controllers
                 return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });
             }
         }
-
     }
 }
