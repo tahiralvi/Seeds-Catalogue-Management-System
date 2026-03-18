@@ -17,6 +17,7 @@
 
         // Navigation properties
         public Agent Agent { get; set; }
+
         public Category Category { get; set; }
     }
 }

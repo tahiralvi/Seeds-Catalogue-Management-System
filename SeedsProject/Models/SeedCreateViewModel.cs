@@ -40,6 +40,7 @@ public class SeedCreateViewModel
 
     // Navigation properties for dropdowns (not for form binding)
     public List<Category> Categories { get; set; }
+
     public List<Agent> Agents { get; set; }
 }
 

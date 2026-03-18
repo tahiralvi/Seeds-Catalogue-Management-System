@@ -1,6 +1,4 @@
-﻿using SeedsProject.Models;
-
-namespace SeedsProject.Models
+﻿namespace SeedsProject.Models
 {
     public class Category
     {
