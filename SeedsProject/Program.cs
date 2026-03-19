@@ -1,6 +1,6 @@
+using SeedsProject.Models;
 using SeedsProject.Services.Interface;
 using SeedsProject.Services.Model;
-using SeedsProject.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
