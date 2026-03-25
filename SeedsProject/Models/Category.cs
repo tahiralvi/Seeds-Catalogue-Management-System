@@ -11,11 +11,4 @@ namespace SeedsProject.Models
         public DateTime CreatedDate { get; set; }
     }
 
-
-    public enum LifeCycleType
-    {
-        Annual = 1,
-        Biennial = 2,
-        Perennial = 3
-    }
 }
