@@ -15,6 +15,6 @@
 
     public class SeedInventoryItem
     {
-        public int SeedInventoryItemId { get; set; }
+        public int Id { get; set; }
     }
 }
