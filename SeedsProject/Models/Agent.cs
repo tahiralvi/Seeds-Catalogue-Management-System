@@ -15,6 +15,5 @@
 
     public class SeedInventoryItem
     {
-        public float GerminationRate { get; set; } // e.g., 0.85 for 85%
     }
 }
