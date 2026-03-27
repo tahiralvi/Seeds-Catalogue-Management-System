@@ -12,11 +12,4 @@
         public ICollection<Seed> Seeds { get; set; }
     }
 
-
-    //public class SeedInventoryItem
-    //{
-    //    public int Id { get; set; }
-    //    public string Name { get; set; }
-    //    public string Details { get; set; }
-    //}
 }
