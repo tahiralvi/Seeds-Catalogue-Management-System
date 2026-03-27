@@ -15,7 +15,6 @@
 
     public class SeedInventoryItem
     {
-        public string Sku { get; set; }           // Unique Stock Keeping Unit
         public string SeedName { get; set; }      // e.g., "Heirloom Tomato"
         public string Category { get; set; }      // e.g., "Vegetable", "Flower"
         public int StockQuantity { get; set; }    // Number of packets available
