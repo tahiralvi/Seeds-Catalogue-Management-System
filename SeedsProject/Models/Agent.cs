@@ -15,7 +15,6 @@
 
     public class SeedInventoryItem
     {
-        public DateTime ExpiryDate { get; set; }  // Seeds lose viability over time
         public float GerminationRate { get; set; } // e.g., 0.85 for 85%
     }
 }
