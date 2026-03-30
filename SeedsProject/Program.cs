@@ -15,6 +15,7 @@ builder.Services.Configure<DatabaseSettings>(
 builder.Services.AddScoped<ISeedService, SeedService>();
 builder.Services.AddScoped<IAgentService, AgentService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 
 var app = builder.Build();
 
