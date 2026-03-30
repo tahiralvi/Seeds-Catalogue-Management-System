@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SeedsProject.DTOs;
 using SeedsProject.Models;
+using SeedsProject.Services.Interface;
 using System.Security.Claims;
 
 namespace SeedsProject.Controllers
@@ -12,13 +13,18 @@ namespace SeedsProject.Controllers
     [Route("api/[controller]")]
     public class OrderController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ILogger<OrderController> _logger;
+        private readonly IOrderService _orderService;
+        private readonly ISeedService _seedService;
 
-        public OrderController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public OrderController(
+            ILogger<OrderController> logger,
+            IOrderService orderService,
+            ISeedService seedService)
         {
-            _context = context;
-            _userManager = userManager;
+            _logger = logger;
+            _orderService = orderService;
+            _seedService = seedService;
         }
 
         // POST: api/Order/Checkout
@@ -29,9 +35,6 @@ namespace SeedsProject.Controllers
                 return BadRequest("Cart is empty.");
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            // Using a transaction to ensure either the whole order is saved or nothing is
-            using var transaction = await _context.Database.BeginTransactionAsync();
 
             try
             {
@@ -47,10 +50,14 @@ namespace SeedsProject.Controllers
 
                 foreach (var item in checkoutDto.Items)
                 {
-                    var seed = await _context.Seeds.FindAsync(item.SeedId);
+                    // Use ISeedService instead of _context
+                    var seed = await _seedService.GetSeedByIdAsync(item.SeedId);
 
-                    if (seed == null || seed.Stock < item.Quantity)
-                        return BadRequest($"Seed with ID {item.SeedId} is unavailable or out of stock.");
+                    if (seed == null)
+                        return BadRequest($"Seed with ID {item.SeedId} not found.");
+
+                    if (seed.Stock < item.Quantity)
+                        return BadRequest($"Seed '{seed.Name}' is out of stock.");
 
                     var orderItem = new OrderItem
                     {
@@ -61,22 +68,18 @@ namespace SeedsProject.Controllers
 
                     order.OrderItems.Add(orderItem);
                     totalAmount += (seed.Price * item.Quantity);
-
-                    // Update stock levels
-                    seed.Stock -= item.Quantity;
                 }
 
                 order.TotalAmount = totalAmount;
 
-                _context.Orders.Add(order);
-                await _context.SaveChangesAsync();
-                await transaction.CommitAsync();
+                // The OrderService handles the transaction and stock updates internally
+                var orderId = await _orderService.CreateOrderAsync(order);
 
-                return Ok(new { OrderId = order.Id, Message = "Order placed successfully!" });
+                return Ok(new { OrderId = orderId, Message = "Order placed successfully!" });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                await transaction.RollbackAsync();
+                _logger.LogError(ex, "Error processing checkout for user {UserId}", userId);
                 return StatusCode(500, "An error occurred while processing your order.");
             }
         }
@@ -87,12 +90,9 @@ namespace SeedsProject.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            return await _context.Orders
-                .Include(o => o.OrderItems)
-                .ThenInclude(oi => oi.Seed)
-                .Where(o => o.UserId == userId)
-                .OrderByDescending(o => o.OrderDate)
-                .ToListAsync();
+            // Use the service to fetch orders instead of direct DB access
+            var orders = await _orderService.GetOrdersByUserIdAsync(userId);
+            return Ok(orders);
         }
     }
 }

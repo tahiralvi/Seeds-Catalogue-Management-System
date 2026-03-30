@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SeedsProject")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5f7284b4f9713a467542c5928279eb10efee8e76")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bc9f1facc0ac1e9c9df8610a264349d262274f5e")]
 [assembly: System.Reflection.AssemblyProductAttribute("SeedsProject")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SeedsProject")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
