@@ -1,1 +1,38 @@
-[]
+[
+  {
+    "ContainingType": "SeedsProject.Controllers.OrderController",
+    "Method": "Checkout",
+    "RelativePath": "api/Order/Checkout",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "checkoutDto",
+        "Type": "SeedsProject.DTOs.CheckoutDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SeedsProject.Controllers.OrderController",
+    "Method": "GetMyOrders",
+    "RelativePath": "api/Order/MyOrders",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[SeedsProject.Models.Order, SeedsProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  }
+]
