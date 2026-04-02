@@ -1,0 +1,14 @@
+﻿@model int
+
+<option value="">-- Select Product --</option>
+@foreach (var item in (IEnumerable<SeedsProject.Models.Item>)ViewBag.Items)
+{
+    if (item.ItemId == Model)
+    {
+        <option value="@item.ItemId" selected>@item.Name</option>
+    }
+    else
+    {
+        <option value="@item.ItemId">@item.Name</option>
+    }
+}

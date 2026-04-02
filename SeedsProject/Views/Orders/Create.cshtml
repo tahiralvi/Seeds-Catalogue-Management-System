@@ -1,0 +1,163 @@
+﻿@model GroceryStoreAPI.Models.Order
+
+@{
+    ViewData["Title"] = "Create Order";
+}
+
+<h2>Create New Order</h2>
+
+<form asp-action="Create" method="post" id="orderForm">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <!-- CustomerId (in a real app you might use a dropdown or user claim) -->
+    <div class="form-group">
+        <label asp-for="CustomerId" class="control-label"></label>
+        <input asp-for="CustomerId" class="form-control" />
+        <span asp-validation-for="CustomerId" class="text-danger"></span>
+    </div>
+
+    <!-- Order details (line items) container -->
+    <h4>Order Items</h4>
+    <table class="table" id="orderItemsTable">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Unit Price</th>
+                <th>Subtotal</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Existing items will be added here dynamically -->
+            @if (Model.OrderDetails != null)
+            {
+                for (int i = 0; i < Model.OrderDetails.Count; i++)
+                {
+                    <tr class="order-item-row">
+                        <td>
+                            <select name="OrderDetails[@i].ItemId" class="form-control item-select" required>
+                                <option value="">-- Select Product --</option>
+                                @await Component.InvokeAsync("ProductList", new { selectedId = Model.OrderDetails[i].ItemId })
+                            </select>
+                        </td>
+                        <td>
+                            <input name="OrderDetails[@i].Quantity" type="number" class="form-control quantity" value="@Model.OrderDetails[i].Quantity" min="1" required />
+                        </td>
+                        <td>
+                            <input name="OrderDetails[@i].UnitPrice" class="form-control unit-price" value="@Model.OrderDetails[i].UnitPrice" readonly />
+                        </td>
+                        <td class="item-subtotal">0.00</td>
+                        <td><button type="button" class="btn btn-danger btn-sm remove-row">Remove</button></td>
+                    </tr>
+                }
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3" class="text-right"><strong>Total Amount:</strong></td>
+                <td colspan="2"><strong id="grandTotal">0.00</strong></td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <button type="button" id="addItemBtn" class="btn btn-secondary">Add Item</button>
+    <button type="submit" class="btn btn-primary">Place Order</button>
+</form>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Helper to recalculate subtotals and grand total
+        function recalculateTotals() {
+            let grandTotal = 0;
+            $("#orderItemsTable tbody tr").each(function() {
+                let qty = parseFloat($(this).find(".quantity").val()) || 0;
+                let price = parseFloat($(this).find(".unit-price").val()) || 0;
+                let subtotal = qty * price;
+                $(this).find(".item-subtotal").text(subtotal.toFixed(2));
+                grandTotal += subtotal;
+            });
+            $("#grandTotal").text(grandTotal.toFixed(2));
+            // Also set the hidden TotalAmount field if needed
+            if ($("#TotalAmount").length === 0) {
+                $("<input>").attr({
+                    type: "hidden",
+                    id: "TotalAmount",
+                    name: "TotalAmount"
+                }).appendTo("#orderForm");
+            }
+            $("#TotalAmount").val(grandTotal.toFixed(2));
+        }
+
+        // Fetch unit price when product is selected
+        $(document).on("change", ".item-select", function() {
+            let row = $(this).closest("tr");
+            let itemId = $(this).val();
+            if (itemId) {
+                $.getJSON("/api/items/" + itemId + "/price", function(data) {
+                    row.find(".unit-price").val(data.price);
+                    recalculateTotals();
+                }).fail(function() {
+                    row.find(".unit-price").val(0);
+                    recalculateTotals();
+                });
+            } else {
+                row.find(".unit-price").val(0);
+                recalculateTotals();
+            }
+        });
+
+        // Update totals when quantity changes
+        $(document).on("input", ".quantity", function() {
+            recalculateTotals();
+        });
+
+        // Add a new empty row
+        $("#addItemBtn").click(function() {
+            let index = $("#orderItemsTable tbody tr").length;
+            let newRow = `
+                <tr class="order-item-row">
+                    <td>
+                        <select name="OrderDetails[${index}].ItemId" class="form-control item-select" required>
+                            <option value="">-- Select Product --</option>
+                            @await Component.InvokeAsync("ProductList", new { selectedId = 0 })
+                        </select>
+                    </td>
+                    <td>
+                        <input name="OrderDetails[${index}].Quantity" type="number" class="form-control quantity" value="1" min="1" required />
+                    </td>
+                    <td>
+                        <input name="OrderDetails[${index}].UnitPrice" class="form-control unit-price" readonly />
+                    </td>
+                    <td class="item-subtotal">0.00</td>
+                    <td><button type="button" class="btn btn-danger btn-sm remove-row">Remove</button></td>
+                </tr>`;
+            $("#orderItemsTable tbody").append(newRow);
+            recalculateTotals();
+        });
+
+        // Remove a row
+        $(document).on("click", ".remove-row", function() {
+            if ($("#orderItemsTable tbody tr").length > 1) {
+                $(this).closest("tr").remove();
+                // Rename indexes for proper model binding
+                $("#orderItemsTable tbody tr").each(function(newIndex) {
+                    $(this).find("select[name^='OrderDetails']").attr("name", `OrderDetails[${newIndex}].ItemId`);
+                    $(this).find("input[name^='OrderDetails']").attr("name", function() {
+                        let oldName = $(this).attr("name");
+                        if (oldName.includes("Quantity")) return `OrderDetails[${newIndex}].Quantity`;
+                        if (oldName.includes("UnitPrice")) return `OrderDetails[${newIndex}].UnitPrice`;
+                        return oldName;
+                    });
+                });
+                recalculateTotals();
+            } else {
+                alert("Order must have at least one item.");
+            }
+        });
+
+        // Initial calculation
+        recalculateTotals();
+    </script>
+}
