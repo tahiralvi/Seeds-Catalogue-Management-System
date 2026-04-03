@@ -1,22 +1,29 @@
-﻿@model GroceryStoreAPI.Models.Order
-
+﻿@model SeedsProject.Models.Order
+@using SeedsProject.Models
 @{
     ViewData["Title"] = "Create Order";
-}
 
+    // Build options HTML for the seed selector (if controller provided seeds via ViewBag.Seeds)
+    var seeds = ViewBag.Seeds as IEnumerable<Seed> ?? Enumerable.Empty<Seed>();
+    var seedOptionsHtml = new System.Text.StringBuilder();
+    foreach (var s in seeds)
+    {
+        seedOptionsHtml.Append($"<option value=\"{s.Id}\">{s.Name}</option>");
+    }
+}
 <h2>Create New Order</h2>
 
 <form asp-action="Create" method="post" id="orderForm">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-    <!-- CustomerId (in a real app you might use a dropdown or user claim) -->
+    <!-- UserId (use current user in controller for real app) -->
     <div class="form-group">
-        <label asp-for="CustomerId" class="control-label"></label>
-        <input asp-for="CustomerId" class="form-control" />
-        <span asp-validation-for="CustomerId" class="text-danger"></span>
+        <label asp-for="UserId" class="control-label"></label>
+        <input asp-for="UserId" class="form-control" />
+        <span asp-validation-for="UserId" class="text-danger"></span>
     </div>
 
-    <!-- Order details (line items) container -->
+    <!-- Order items container -->
     <h4>Order Items</h4>
     <table class="table" id="orderItemsTable">
         <thead>
@@ -29,28 +36,47 @@
             </tr>
         </thead>
         <tbody>
-            <!-- Existing items will be added here dynamically -->
-            @if (Model.OrderDetails != null)
+            @if (Model?.OrderItems != null && Model.OrderItems.Any())
             {
-                for (int i = 0; i < Model.OrderDetails.Count; i++)
+                for (int i = 0; i < Model.OrderItems.Count; i++)
                 {
                     <tr class="order-item-row">
                         <td>
-                            <select name="OrderDetails[@i].ItemId" class="form-control item-select" required>
+                            <select name="OrderItems[@i].SeedId" class="form-control item-select" required>
                                 <option value="">-- Select Product --</option>
-                                @await Component.InvokeAsync("ProductList", new { selectedId = Model.OrderDetails[i].ItemId })
+                                @Html.Raw(seedOptionsHtml.ToString().Replace($"value=\"{Model.OrderItems[i].SeedId}\"", $"value=\"{Model.OrderItems[i].SeedId}\" selected"))
                             </select>
                         </td>
                         <td>
-                            <input name="OrderDetails[@i].Quantity" type="number" class="form-control quantity" value="@Model.OrderDetails[i].Quantity" min="1" required />
+                            <input name="OrderItems[@i].Quantity" type="number" class="form-control quantity" value="@Model.OrderItems[i].Quantity" min="1" required />
                         </td>
                         <td>
-                            <input name="OrderDetails[@i].UnitPrice" class="form-control unit-price" value="@Model.OrderDetails[i].UnitPrice" readonly />
+                            <input name="OrderItems[@i].PriceAtPurchase" class="form-control unit-price" value="@Model.OrderItems[i].PriceAtPurchase" readonly />
                         </td>
                         <td class="item-subtotal">0.00</td>
                         <td><button type="button" class="btn btn-danger btn-sm remove-row">Remove</button></td>
                     </tr>
                 }
+            }
+            else
+            {
+                // Render a single empty line item to start with
+                <tr class="order-item-row">
+                    <td>
+                        <select name="OrderItems[0].SeedId" class="form-control item-select" required>
+                            <option value="">-- Select Product --</option>
+                            @Html.Raw(seedOptionsHtml.ToString())
+                        </select>
+                    </td>
+                    <td>
+                        <input name="OrderItems[0].Quantity" type="number" class="form-control quantity" value="1" min="1" required />
+                    </td>
+                    <td>
+                        <input name="OrderItems[0].PriceAtPurchase" class="form-control unit-price" readonly />
+                    </td>
+                    <td class="item-subtotal">0.00</td>
+                    <td><button type="button" class="btn btn-danger btn-sm remove-row">Remove</button></td>
+                </tr>
             }
         </tbody>
         <tfoot>
@@ -68,10 +94,12 @@
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        // Helper to recalculate subtotals and grand total
+        // Rendered seed options (server-side). Used when adding rows client-side.
+        var seedOptionsHtml = `@Html.Raw(seedOptionsHtml.ToString())`;
+
         function recalculateTotals() {
             let grandTotal = 0;
-            $("#orderItemsTable tbody tr").each(function() {
+            $("#orderItemsTable tbody tr").each(function () {
                 let qty = parseFloat($(this).find(".quantity").val()) || 0;
                 let price = parseFloat($(this).find(".unit-price").val()) || 0;
                 let subtotal = qty * price;
@@ -79,7 +107,7 @@
                 grandTotal += subtotal;
             });
             $("#grandTotal").text(grandTotal.toFixed(2));
-            // Also set the hidden TotalAmount field if needed
+
             if ($("#TotalAmount").length === 0) {
                 $("<input>").attr({
                     type: "hidden",
@@ -90,15 +118,20 @@
             $("#TotalAmount").val(grandTotal.toFixed(2));
         }
 
-        // Fetch unit price when product is selected
-        $(document).on("change", ".item-select", function() {
+        // Fetch seed price when product selected.
+        // Adjust endpoint to match your API (example uses /api/seeds/{id})
+        $(document).on("change", ".item-select", function () {
             let row = $(this).closest("tr");
-            let itemId = $(this).val();
-            if (itemId) {
-                $.getJSON("/api/items/" + itemId + "/price", function(data) {
-                    row.find(".unit-price").val(data.price);
+            let seedId = $(this).val();
+            if (seedId) {
+                $.getJSON("/api/seeds/" + seedId, function (data) {
+                    // Expecting data.price or data.price property -- adjust per your API
+                    var price = data?.price ?? data?.priceAtPurchase ?? data?.price ?? 0;
+                    // fallback to known property names
+                    if (!price && data?.price !== undefined) price = data.price;
+                    row.find(".unit-price").val(price);
                     recalculateTotals();
-                }).fail(function() {
+                }).fail(function () {
                     row.find(".unit-price").val(0);
                     recalculateTotals();
                 });
@@ -108,27 +141,25 @@
             }
         });
 
-        // Update totals when quantity changes
-        $(document).on("input", ".quantity", function() {
+        $(document).on("input", ".quantity", function () {
             recalculateTotals();
         });
 
-        // Add a new empty row
-        $("#addItemBtn").click(function() {
+        $("#addItemBtn").click(function () {
             let index = $("#orderItemsTable tbody tr").length;
             let newRow = `
                 <tr class="order-item-row">
                     <td>
-                        <select name="OrderDetails[${index}].ItemId" class="form-control item-select" required>
+                        <select name="OrderItems[${index}].SeedId" class="form-control item-select" required>
                             <option value="">-- Select Product --</option>
-                            @await Component.InvokeAsync("ProductList", new { selectedId = 0 })
+                            ${seedOptionsHtml}
                         </select>
                     </td>
                     <td>
-                        <input name="OrderDetails[${index}].Quantity" type="number" class="form-control quantity" value="1" min="1" required />
+                        <input name="OrderItems[${index}].Quantity" type="number" class="form-control quantity" value="1" min="1" required />
                     </td>
                     <td>
-                        <input name="OrderDetails[${index}].UnitPrice" class="form-control unit-price" readonly />
+                        <input name="OrderItems[${index}].PriceAtPurchase" class="form-control unit-price" readonly />
                     </td>
                     <td class="item-subtotal">0.00</td>
                     <td><button type="button" class="btn btn-danger btn-sm remove-row">Remove</button></td>
@@ -137,17 +168,16 @@
             recalculateTotals();
         });
 
-        // Remove a row
-        $(document).on("click", ".remove-row", function() {
+        $(document).on("click", ".remove-row", function () {
             if ($("#orderItemsTable tbody tr").length > 1) {
                 $(this).closest("tr").remove();
                 // Rename indexes for proper model binding
-                $("#orderItemsTable tbody tr").each(function(newIndex) {
-                    $(this).find("select[name^='OrderDetails']").attr("name", `OrderDetails[${newIndex}].ItemId`);
-                    $(this).find("input[name^='OrderDetails']").attr("name", function() {
+                $("#orderItemsTable tbody tr").each(function (newIndex) {
+                    $(this).find("select[name^='OrderItems']").attr("name", `OrderItems[${newIndex}].SeedId`);
+                    $(this).find("input[name^='OrderItems']").attr("name", function () {
                         let oldName = $(this).attr("name");
-                        if (oldName.includes("Quantity")) return `OrderDetails[${newIndex}].Quantity`;
-                        if (oldName.includes("UnitPrice")) return `OrderDetails[${newIndex}].UnitPrice`;
+                        if (oldName.includes("Quantity")) return `OrderItems[${newIndex}].Quantity`;
+                        if (oldName.includes("PriceAtPurchase")) return `OrderItems[${newIndex}].PriceAtPurchase`;
                         return oldName;
                     });
                 });
@@ -157,7 +187,7 @@
             }
         });
 
-        // Initial calculation
+        // initial calc
         recalculateTotals();
     </script>
 }
