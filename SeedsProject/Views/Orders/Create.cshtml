@@ -3,27 +3,25 @@
 @{
     ViewData["Title"] = "Create Order";
 
-    // Build options HTML for the seed selector (if controller provided seeds via ViewBag.Seeds)
     var seeds = ViewBag.Seeds as IEnumerable<Seed> ?? Enumerable.Empty<Seed>();
-    var seedOptionsHtml = new System.Text.StringBuilder();
+    var optionsBuilder = new System.Text.StringBuilder();
     foreach (var s in seeds)
     {
-        seedOptionsHtml.Append($"<option value=\"{s.Id}\">{s.Name}</option>");
+        optionsBuilder.Append($"<option value=\"{s.Id}\">{s.Name}</option>");
     }
+    var seedOptionsHtml = optionsBuilder.ToString();
 }
 <h2>Create New Order</h2>
 
 <form asp-action="Create" method="post" id="orderForm">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-    <!-- UserId (use current user in controller for real app) -->
     <div class="form-group">
         <label asp-for="UserId" class="control-label"></label>
         <input asp-for="UserId" class="form-control" />
         <span asp-validation-for="UserId" class="text-danger"></span>
     </div>
 
-    <!-- Order items container -->
     <h4>Order Items</h4>
     <table class="table" id="orderItemsTable">
         <thead>
@@ -44,7 +42,10 @@
                         <td>
                             <select name="OrderItems[@i].SeedId" class="form-control item-select" required>
                                 <option value="">-- Select Product --</option>
-                                @Html.Raw(seedOptionsHtml.ToString().Replace($"value=\"{Model.OrderItems[i].SeedId}\"", $"value=\"{Model.OrderItems[i].SeedId}\" selected"))
+                                @foreach (var s in seeds)
+                                {
+                                    <option value="@s.Id" @(s.Id == Model.OrderItems[i].SeedId ? "selected" : "")>@s.Name</option>
+                                }
                             </select>
                         </td>
                         <td>
@@ -60,12 +61,11 @@
             }
             else
             {
-                // Render a single empty line item to start with
                 <tr class="order-item-row">
                     <td>
                         <select name="OrderItems[0].SeedId" class="form-control item-select" required>
                             <option value="">-- Select Product --</option>
-                            @Html.Raw(seedOptionsHtml.ToString())
+                            @Html.Raw(seedOptionsHtml)
                         </select>
                     </td>
                     <td>
@@ -94,8 +94,7 @@
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        // Rendered seed options (server-side). Used when adding rows client-side.
-        var seedOptionsHtml = `@Html.Raw(seedOptionsHtml.ToString())`;
+        var seedOptionsHtml = `@Html.Raw(seedOptionsHtml)`;
 
         function recalculateTotals() {
             let grandTotal = 0;
@@ -118,17 +117,15 @@
             $("#TotalAmount").val(grandTotal.toFixed(2));
         }
 
-        // Fetch seed price when product selected.
-        // Adjust endpoint to match your API (example uses /api/seeds/{id})
+        // When a product (seed) is selected we fetch its current price.
+        // Adjust endpoint to your API if different (example: /api/seeds/{id})
         $(document).on("change", ".item-select", function () {
             let row = $(this).closest("tr");
             let seedId = $(this).val();
             if (seedId) {
                 $.getJSON("/api/seeds/" + seedId, function (data) {
-                    // Expecting data.price or data.price property -- adjust per your API
-                    var price = data?.price ?? data?.priceAtPurchase ?? data?.price ?? 0;
-                    // fallback to known property names
-                    if (!price && data?.price !== undefined) price = data.price;
+                    // Expecting the API returns an object with a Price property
+                    let price = data?.price ?? data?.Price ?? 0;
                     row.find(".unit-price").val(price);
                     recalculateTotals();
                 }).fail(function () {
@@ -171,7 +168,7 @@
         $(document).on("click", ".remove-row", function () {
             if ($("#orderItemsTable tbody tr").length > 1) {
                 $(this).closest("tr").remove();
-                // Rename indexes for proper model binding
+                // Re-index names so model binding works
                 $("#orderItemsTable tbody tr").each(function (newIndex) {
                     $(this).find("select[name^='OrderItems']").attr("name", `OrderItems[${newIndex}].SeedId`);
                     $(this).find("input[name^='OrderItems']").attr("name", function () {
@@ -187,7 +184,7 @@
             }
         });
 
-        // initial calc
-        recalculateTotals();
+        // initial calculation on load
+        $(function () { recalculateTotals(); });
     </script>
 }
