@@ -49,7 +49,6 @@ namespace SeedsProject.Controllers
 
                 foreach (var item in checkoutDto.Items)
                 {
-                    // Use ISeedService instead of _context
                     var seed = await _seedService.GetSeedByIdAsync(item.SeedId);
 
                     if (seed == null)
@@ -71,7 +70,6 @@ namespace SeedsProject.Controllers
 
                 order.TotalAmount = totalAmount;
 
-                // The OrderService handles the transaction and stock updates internally
                 var orderId = await _orderService.CreateOrderAsync(order);
 
                 return Ok(new { OrderId = orderId, Message = "Order placed successfully!" });
@@ -89,7 +87,6 @@ namespace SeedsProject.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            // Use the service to fetch orders instead of direct DB access
             var orders = await _orderService.GetOrdersByUserIdAsync(userId);
             return Ok(orders);
         }
