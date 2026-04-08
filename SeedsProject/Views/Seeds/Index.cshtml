@@ -176,6 +176,12 @@
                                 <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">
                                     <i class="fas fa-trash"></i> Delete
                                 </a>
+                                <div class="input-group ms-2" style="width:140px;">
+                                    <input type="number" id="qty-@item.Id" class="form-control form-control-sm" min="1" max="@item.Stock" value="1" />
+                                    <button type="button" class="btn btn-sm btn-success" onclick="addToCart(@item.Id)">
+                                        <i class="fas fa-cart-plus"></i>
+                                    </button>
+                                </div>
                             </div>
                         </td>
                     </tr>
@@ -204,8 +210,53 @@ else
     </div>
 }
 
+<div id="cart-alert" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" style="position:fixed; right:20px; bottom:20px; display:none;">
+    <div class="d-flex">
+        <div class="toast-body" id="cart-alert-body"></div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" onclick="hideCartAlert()" aria-label="Close"></button>
+    </div>
+</div>
+
 @section Scripts {
     <script>
+        async function addToCart(seedId) {
+            const qtyInput = document.getElementById(`qty-${seedId}`);
+            let quantity = parseInt(qtyInput?.value || "1", 10);
+            if (!quantity || quantity < 1) quantity = 1;
+
+            try {
+                const res = await fetch('/api/Order/AddToCart', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ seedId: seedId, quantity: quantity })
+                });
+
+                if (!res.ok) {
+                    const txt = await res.text();
+                    alert('Error adding to cart: ' + txt);
+                    return;
+                }
+
+                const data = await res.json();
+                showCartAlert(`${quantity} item(s) added. Cart count: ${data.cartCount ?? data.CartCount ?? ''}`);
+            } catch (err) {
+                console.error(err);
+                alert('An error occurred while adding to cart.');
+            }
+        }
+
+        function showCartAlert(message) {
+            const toastEl = document.getElementById('cart-alert');
+            const body = document.getElementById('cart-alert-body');
+            body.textContent = message;
+            toastEl.style.display = 'block';
+            setTimeout(() => { toastEl.style.display = 'none'; }, 2500);
+        }
+
+        function hideCartAlert() {
+            document.getElementById('cart-alert').style.display = 'none';
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             // Auto-submit form when filters change
             const filterSelects = document.querySelectorAll('#approvalStatus, #minStock, #maxStock');
@@ -214,12 +265,6 @@ else
                     document.getElementById('searchForm').submit();
                 });
             });
-
-            // Clear individual filter fields
-            const clearFilter = function(fieldId) {
-                document.getElementById(fieldId).value = '';
-                document.getElementById('searchForm').submit();
-            };
         });
     </script>
 }
