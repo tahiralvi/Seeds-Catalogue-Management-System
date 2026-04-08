@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SeedsProject.DTOs;
 using SeedsProject.Models;
 using SeedsProject.Services.Interface;
@@ -7,7 +6,6 @@ using System.Security.Claims;
 
 namespace SeedsProject.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class OrderController : ControllerBase
