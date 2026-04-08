@@ -38,23 +38,31 @@
         <tbody>
             @if (Model?.OrderItems != null && Model.OrderItems.Any())
             {
+                int quantity;
+                decimal priceAtPurchase;
                 for (int i = 0; i < Model.OrderItems.Count; i++)
                 {
+                    quantity = Model.OrderItems.ToList()[i].Quantity;
+                    priceAtPurchase = Model.OrderItems.ToList()[i].PriceAtPurchase;
+
                     <tr class="order-item-row">
                         <td>
                             <select name="OrderItems[@i].SeedId" class="form-control item-select" required>
                                 <option value="">-- Select Product --</option>
                                 @foreach (var s in seeds)
                                 {
-                                    <option value="@s.Id" @(s.Id == Model.OrderItems[i].SeedId ? "selected" : "")>@s.Name</option>
+                                    var isSelected = s.Id == Model.OrderItems.ToList()[i].SeedId ? "selected" : "";
+                                    <option value="@s.Id" selected="@isSelected">
+                                        @s.Name
+                                    </option>
                                 }
                             </select>
                         </td>
                         <td>
-                            <input name="OrderItems[@i].Quantity" type="number" class="form-control quantity" value="@Model.OrderItems[i].Quantity" min="1" required />
+                            <input name="OrderItems[@i].Quantity" type="number" class="form-control quantity" value="@quantity" min="1" required />
                         </td>
                         <td>
-                            <input name="OrderItems[@i].PriceAtPurchase" class="form-control unit-price" value="@Model.OrderItems[i].PriceAtPurchase" readonly />
+                            <input name="OrderItems[@i].PriceAtPurchase" class="form-control unit-price" value="@priceAtPurchase" readonly />
                         </td>
                         <td class="item-subtotal">0.00</td>
                         <td><button type="button" class="btn btn-danger btn-sm remove-row">Remove</button></td>
