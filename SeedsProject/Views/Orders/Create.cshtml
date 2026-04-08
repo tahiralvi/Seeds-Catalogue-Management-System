@@ -1,5 +1,6 @@
 ﻿@model SeedsProject.Models.Order
 @using SeedsProject.Models
+
 @{
     ViewData["Title"] = "Create Order";
 
@@ -11,6 +12,7 @@
     }
     var seedOptionsHtml = optionsBuilder.ToString();
 }
+
 <h2>Create New Order</h2>
 
 <form asp-action="Create" method="post" id="orderForm">
