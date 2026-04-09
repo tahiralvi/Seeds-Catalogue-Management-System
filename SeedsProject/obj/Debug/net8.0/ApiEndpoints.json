@@ -1,6 +1,32 @@
 [
   {
     "ContainingType": "SeedsProject.Controllers.OrderController",
+    "Method": "AddToCart",
+    "RelativePath": "api/Order/AddToCart",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "item",
+        "Type": "SeedsProject.DTOs.CartItemDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SeedsProject.Controllers.OrderController",
+    "Method": "GetCart",
+    "RelativePath": "api/Order/Cart",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SeedsProject.Controllers.OrderController",
     "Method": "Checkout",
     "RelativePath": "api/Order/Checkout",
     "HttpMethod": "POST",
@@ -34,5 +60,21 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "SeedsProject.Controllers.OrderController",
+    "Method": "RemoveFromCart",
+    "RelativePath": "api/Order/RemoveFromCart",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "item",
+        "Type": "SeedsProject.DTOs.CartItemDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   }
 ]
