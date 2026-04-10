@@ -46,6 +46,14 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
                         </li>
+
+                        <!-- Cart menu item (right side) -->
+                        <li class="nav-item ms-2">
+                            <a class="nav-link text-dark d-flex align-items-center" asp-controller="Order" asp-action="CartView" title="View Cart">
+                                <i class="fas fa-shopping-cart fa-lg"></i>
+                                <span id="nav-cart-count" class="badge bg-danger ms-2" style="display:none;">0</span>
+                            </a>
+                        </li>
                     </ul> 
                 </div>
             </div>
@@ -66,6 +74,32 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        // Expose a global function to update the cart count shown in the layout.
+        // Other pages (e.g. addToCart) can call window.updateCartCount() after they change the cart.
+        window.updateCartCount = async function () {
+            try {
+                const res = await fetch('/api/Order/Cart', { credentials: 'same-origin' });
+                if (!res.ok) return;
+                const items = await res.json();
+                const count = Array.isArray(items) ? items.reduce((s, i) => s + (i.quantity ?? i.Quantity ?? 0), 0) : 0;
+                const el = document.getElementById('nav-cart-count');
+                if (!el) return;
+                el.textContent = count;
+                el.style.display = count > 0 ? 'inline-block' : 'none';
+            } catch (err) {
+                // Fail silently - cart count is non-critical
+                console.error('Unable to update cart count', err);
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // initialize cart count on page load
+            window.updateCartCount();
+        });
+    </script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -1,0 +1,130 @@
+@model SeedsProject.ViewModels.CartViewModel
+
+@{
+    ViewData["Title"] = "Your Cart";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Your Cart</h2>
+
+@if (!Model.Items.Any())
+{
+    <div class="alert alert-info">Your cart is empty. <a asp-controller="Seeds" asp-action="Index">Browse seeds</a>.</div>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Seed</th>
+                <th>Price</th>
+                <th style="width:120px">Quantity</th>
+                <th>Subtotal</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var it in Model.Items)
+            {
+                <tr data-seed-id="@it.SeedId">
+                    <td>
+                        <strong>@it.Name</strong>
+                        @if (!string.IsNullOrEmpty(it.Image))
+                        {
+                            <div><img src="@it.Image" alt="@it.Name" style="max-width:80px; max-height:60px;" /></div>
+                        }
+                    </td>
+                    <td>@it.Price.ToString("C")</td>
+                    <td>
+                        <div class="input-group">
+                            <input type="number" class="form-control form-control-sm qty-input" min="1" max="@it.Stock" value="@it.Quantity" />
+                            <button class="btn btn-sm btn-outline-secondary ms-1 update-qty">Update</button>
+                        </div>
+                    </td>
+                    <td class="subtotal">@it.SubTotal.ToString("C")</td>
+                    <td>
+                        <button class="btn btn-sm btn-danger remove-item">Remove</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                <td colspan="2"><strong id="cart-total">@Model.Total.ToString("C")</strong></td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <div class="d-flex gap-2">
+        <a asp-controller="Seeds" asp-action="Index" class="btn btn-secondary">Continue Shopping</a>
+        <a asp-controller="Order" asp-action="CheckoutView" class="btn btn-success">Proceed to Checkout</a>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        async function postJson(url, body) {
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value },
+                body: JSON.stringify(body)
+            });
+            return res;
+        }
+
+        async function refreshTotals() {
+            // Recompute totals on the client for instant feedback
+            let total = 0;
+            document.querySelectorAll('tbody tr').forEach(row => {
+                const priceText = row.querySelector('td:nth-child(2)').textContent.trim();
+                const price = parseFloat(priceText.replace(/[^0-9.-]+/g,"")) || 0;
+                const qty = parseInt(row.querySelector('.qty-input').value) || 0;
+                const subtotal = price * qty;
+                row.querySelector('.subtotal').textContent = subtotal.toLocaleString(undefined, { style: 'currency', currency: 'USD' });
+                total += subtotal;
+            });
+            document.getElementById('cart-total').textContent = total.toLocaleString(undefined, { style: 'currency', currency: 'USD' });
+        }
+
+        document.addEventListener('click', async function (e) {
+            if (e.target.matches('.remove-item')) {
+                const row = e.target.closest('tr');
+                const seedId = parseInt(row.getAttribute('data-seed-id'));
+                e.target.disabled = true;
+                const res = await postJson('/api/Order/RemoveFromCart', { seedId: seedId });
+                if (!res.ok) {
+                    alert('Failed to remove item');
+                    e.target.disabled = false;
+                    return;
+                }
+                row.remove();
+                refreshTotals();
+            }
+
+            if (e.target.matches('.update-qty')) {
+                const row = e.target.closest('tr');
+                const seedId = parseInt(row.getAttribute('data-seed-id'));
+                const newQty = parseInt(row.querySelector('.qty-input').value) || 1;
+
+                // Remove existing then add new qty (server API supports Remove + Add)
+                e.target.disabled = true;
+                await postJson('/api/Order/RemoveFromCart', { seedId: seedId });
+                const addRes = await postJson('/api/Order/AddToCart', { seedId: seedId, quantity: newQty });
+                if (!addRes.ok) {
+                    alert('Failed to update quantity');
+                    e.target.disabled = false;
+                    return;
+                }
+
+                // Update UI subtotal
+                await refreshTotals();
+                e.target.disabled = false;
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            refreshTotals();
+        });
+    </script>
+}

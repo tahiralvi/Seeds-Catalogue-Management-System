@@ -99,7 +99,7 @@ namespace SeedsProject.Services.Model
             {
                 await connection.OpenAsync();
 
-                using (var command = new SqlCommand("SELECT * FROM Seeds WHERE Id = @Id", connection))
+                using (var command = new SqlCommand("SELECT S.*,A.Name 'AgentName',C.Name 'CategoryName' FROM Seeds S INNER JOIN Agents A ON S.AgentID = A.Id INNER JOIN Category C ON C.Id = S.CategoryID WHERE S.AgentID = @Id", connection))
                 {
                     command.Parameters.AddWithValue("@Id", id);
 
