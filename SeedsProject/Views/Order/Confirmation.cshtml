@@ -1,0 +1,23 @@
+@{
+    ViewData["Title"] = "Order Confirmation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var orderId = ViewData["OrderId"];
+}
+
+<h2>Order Confirmation</h2>
+
+@if (orderId != null)
+{
+    <div class="alert alert-success">
+        Your order has been placed successfully. Order Id: <strong>@orderId</strong>
+    </div>
+}
+else
+{
+    <div class="alert alert-success">Your order has been placed successfully.</div>
+}
+
+<p>
+    <a asp-controller="Seeds" asp-action="Index" class="btn btn-primary">Continue Shopping</a>
+    <a asp-controller="Seeds" asp-action="Index" class="btn btn-outline-secondary">View Orders</a>
+</p>
