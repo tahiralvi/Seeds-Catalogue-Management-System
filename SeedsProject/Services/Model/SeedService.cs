@@ -212,7 +212,12 @@ namespace SeedsProject.Services.Model
             {
                 await connection.OpenAsync();
 
-                using (var command = new SqlCommand("SELECT * FROM Seeds WHERE Approval = 1", connection))
+                using (var command = new SqlCommand(@"SELECT s.*, a.Name as AgentName, a.Email as AgentEmail, a.Phone as AgentPhone,
+                                                        c.Name as CategoryName, c.Description as CategoryDescription
+                                                        FROM Seeds s
+                                                        INNER JOIN Agents a ON s.AgentID = a.Id
+                                                        INNER JOIN Category c ON s.CategoryID = c.Id
+                                                        WHERE s.Approval = 1", connection))
                 using (var reader = await command.ExecuteReaderAsync())
                 {
                     while (await reader.ReadAsync())
