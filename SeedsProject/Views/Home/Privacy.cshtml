@@ -1,6 +1,117 @@
 ﻿@{
     ViewData["Title"] = "Privacy Policy";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<main class="container mt-4">
+    <h1>@ViewData["Title"]</h1>
+    <p class="text-muted">Effective date: @DateTime.UtcNow.ToString("MMMM d, yyyy")</p>
+
+    <section class="mb-4">
+        <h2>Introduction</h2>
+        <p>
+            Welcome to Online Seeds Portal. Your privacy matters. This Privacy Policy explains what information we
+            collect, how we use it, when we share it, and the choices you have with respect to your information when
+            you use our website, products, and services (collectively, "Services").
+        </p>
+    </section>
+
+    <section class="mb-4">
+        <h2>Information We Collect</h2>
+        <ul>
+            <li><strong>Information you provide:</strong> account details, name, email address, shipping address, and any messages you send us when creating orders or contacting support.</li>
+            <li><strong>Payment information:</strong> we do not store full payment card numbers on our servers. Payment is processed via a third-party payment provider; we may retain references to transactions for order records.</li>
+            <li><strong>Order and transaction data:</strong> products purchased, quantities, prices, and order history.</li>
+            <li><strong>Automatically collected data:</strong> device and browser information, IP address, page interactions, and analytics data to improve the site.</li>
+            <li><strong>Cookies and similar technologies:</strong> small files stored in your browser to enable shopping cart, sign-in, preferences, and analytics.</li>
+        </ul>
+    </section>
+
+    <section class="mb-4">
+        <h2>How We Use Your Information</h2>
+        <p>We use information to:</p>
+        <ul>
+            <li>Process and fulfill orders, send order confirmations and shipping updates.</li>
+            <li>Maintain your account and provide customer support.</li>
+            <li>Improve, personalize, and secure our Services.</li>
+            <li>Send promotional emails when you opt in; you can unsubscribe at any time.</li>
+            <li>Comply with legal obligations and prevent fraud.</li>
+        </ul>
+    </section>
+
+    <section class="mb-4">
+        <h2>Cookies, Local Storage & Cart</h2>
+        <p>
+            We use cookies and local storage to remember your cart contents, preferences, and authentication state.
+            You can control cookies via your browser settings; disabling cookies may affect site functionality.
+        </p>
+    </section>
+
+    <section class="mb-4">
+        <h2>Sharing & Third Parties</h2>
+        <p>
+            We may share your information with service providers who perform services on our behalf (payment processors,
+            shipping carriers, analytics providers). We require these providers to protect your data and use it only for
+            the purposes we specify. We will not sell your personal information to third parties.
+        </p>
+    </section>
+
+    <section class="mb-4">
+        <h2>Security</h2>
+        <p>
+            We implement reasonable technical and organizational measures to protect your data. While we strive to protect
+            your information, no system is completely secure. If a data breach affecting your information occurs, we will
+            notify you and relevant authorities when required by law.
+        </p>
+    </section>
+
+    <section class="mb-4">
+        <h2>Your Rights</h2>
+        <p>
+            Depending on your jurisdiction, you may have rights including accessing, correcting, or deleting the personal
+            information we hold about you; exporting your data; or objecting to certain processing. To exercise these rights,
+            contact us at the address below. We may need to verify your identity before responding.
+        </p>
+    </section>
+
+    <section class="mb-4">
+        <h2>Children</h2>
+        <p>
+            Our Services are not directed at children under 16. We do not knowingly collect personal information from children
+            without parental consent. If you believe we have collected personal data from a child, please contact us.
+        </p>
+    </section>
+
+    <section class="mb-4">
+        <h2>Retention</h2>
+        <p>
+            We retain personal information as needed to provide Services, comply with legal obligations, resolve disputes,
+            and enforce our agreements. When no longer required, we securely delete or anonymize the information.
+        </p>
+    </section>
+
+    <section class="mb-4">
+        <h2>Changes to This Policy</h2>
+        <p>
+            We may update this policy from time to time. If we make material changes, we will provide a prominent notice
+            on the site or send you an email if you have an account. Continued use of the Services after the effective
+            date constitutes acceptance of the updated policy.
+        </p>
+    </section>
+
+    <section class="mb-4">
+        <h2>Contact Us</h2>
+        <p>
+            If you have questions, requests, or concerns about your privacy, contact:
+        </p>
+        <ul>
+            <li>Email: <a href="mailto:support@onlineseedsportal.com">support@onlineseedsportal.com</a></li>
+            <li>Address: Online Seeds Portal, 123 Farm Lane, Agriculture City (example)</li>
+        </ul>
+    </section>
+
+    <footer class="mt-4 mb-5">
+        <small class="text-muted">This Privacy Policy describes how Online Seeds Portal handles personal information. For
+        order-specific questions, please visit your account orders page or contact customer support.</small>
+    </footer>
+</main>
