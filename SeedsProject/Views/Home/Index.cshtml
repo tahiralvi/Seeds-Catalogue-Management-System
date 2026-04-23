@@ -10,6 +10,7 @@
     @if (Model != null && Model.Any())
     {
         var featured = Model.Take(5).ToList();
+        
         <!-- Carousel -->
         <div id="homeCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
             <div class="carousel-inner">
@@ -100,7 +101,7 @@
     }
     else
     {
-        <div class="alert alert-info">No seeds available at the moment.</div>
+        <div class="alert alert-info">No seeds available at the moment, please try again later.</div>
     }
 </div>
 
