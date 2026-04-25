@@ -10,7 +10,7 @@ builder.Services.AddControllersWithViews();
 // Configure DatabaseSettings from appsettings.json
 builder.Services.Configure<DatabaseSettings>(
     builder.Configuration.GetSection("DatabaseSettings"));
-
+builder.Services.AddControllersWithViews();
 // Register the Services
 builder.Services.AddScoped<ISeedService, SeedService>();
 builder.Services.AddScoped<IAgentService, AgentService>();

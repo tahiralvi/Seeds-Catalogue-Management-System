@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="~/FinalYearProject.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
+    @* Render optional per-page styles defined with @section Styles { } *@
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
     <header>
@@ -36,7 +38,10 @@
                     </ul> 
                 </div>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1 d-flex justify-content-end">                        
+                    <ul class="navbar-nav flex-grow-1 d-flex justify-content-end"> 
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Order" asp-action="Login">Login</a>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
                         </li>
@@ -65,7 +70,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2025 - Online Seeds Portal @* - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a> *@
+            &copy; 2026 - Online Seeds Portal  - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a> 
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
