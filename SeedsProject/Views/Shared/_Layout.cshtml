@@ -78,6 +78,7 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     <script>
+        // This script defines a global function to update the cart count badge in the navbar.
         // Expose a global function to update the cart count shown in the layout.
         // Other pages (e.g. addToCart) can call window.updateCartCount() after they change the cart.
         window.updateCartCount = async function () {
