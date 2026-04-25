@@ -1,0 +1,34 @@
+@model SeedsProject.Models.Seed
+
+<div class="card h-100 shadow-sm">
+    @if (!string.IsNullOrEmpty(Model.Image))
+    {
+        <img src="@Model.Image" class="card-img-top" alt="@Model.Name" style="height:200px; object-fit:cover;" />
+    }
+    <div class="card-body d-flex flex-column">
+        <h5 class="card-title">@Model.Name</h5>
+        <p class="card-text text-muted mb-1">@Model.Category?.Name</p>
+        <p class="card-text text-truncate" style="flex:1;">@((Model.Description?.Length > 140) ? Model.Description.Substring(0, 140) + "…" : Model.Description)</p>
+
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <div>
+                <div class="h6 text-success">@Model.Price.ToString("C")</div>
+                <small class="text-muted">Stock: @Model.Stock</small>
+            </div>
+
+            <div class="d-flex align-items-center">
+                <div class="input-group" style="width:140px;">
+                    <input type="number" id="qty-@Model.Id" class="form-control form-control-sm" min="1" max="@Model.Stock" value="1" />
+                    <button type="button" class="btn btn-success btn-sm" onclick="addToCart(@Model.Id)">
+                        <i class="fas fa-cart-plus"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-3 d-flex gap-2">
+            <a asp-controller="Seeds" asp-action="Details" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-info">Details</a>
+            <a asp-controller="Seeds" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-warning">Edit</a>
+        </div>
+    </div>
+</div>

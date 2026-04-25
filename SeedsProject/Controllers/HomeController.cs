@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SeedsProject.Models;
 using SeedsProject.Services.Interface;
+using SeedsProject.ViewModels;
 using System.Diagnostics;
 
 namespace SeedsProject.Controllers  
@@ -16,11 +17,31 @@ namespace SeedsProject.Controllers
             _seedService = seedService;
         }
 
+        // Modernized home: returns featured seeds, product list and categories
         public async Task<IActionResult> Index()
         {
-            // Get approved seeds for public listing / carousel
-            var seeds = await _seedService.GetApprovedSeedsAsync() ?? new List<Seed>();
-            return View(seeds);
+            var approvedSeeds = await _seedService.GetApprovedSeedsAsync() ?? new List<Seed>();
+            var categories = await _seedService.GetAllCategoriesAsync() ?? new List<Category>();
+
+            var featured = approvedSeeds
+                .OrderByDescending(s => s.CreatedDate)
+                .Take(5)
+                .ToList();
+
+            var popular = approvedSeeds
+                .OrderByDescending(s => s.Stock)      // simple heuristic: high stock as "popular" for demo
+                .Take(6)
+                .ToList();
+
+            var model = new HomeIndexViewModel
+            {
+                Featured = featured,
+                Popular = popular,
+                Seeds = approvedSeeds,
+                Categories = categories
+            };
+
+            return View(model);
         }
 
         public IActionResult Privacy()

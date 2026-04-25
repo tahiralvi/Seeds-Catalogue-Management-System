@@ -1,0 +1,55 @@
+@model IEnumerable<SeedsProject.Models.Seed>
+
+@if (Model != null && Model.Any())
+{
+    var slides = Model.ToList();
+    <div id="heroCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+        <div class="carousel-inner rounded shadow-sm">
+            @for (int i = 0; i < slides.Count; i++)
+            {
+                var s = slides[i];
+                <div class="carousel-item @(i == 0 ? "active" : "")" style="background:#f8f9fa;">
+                    <div class="row g-0 align-items-center">
+                        <div class="col-md-5">
+                            @if (!string.IsNullOrEmpty(s.Image))
+                            {
+                                <img src="@s.Image" class="d-block w-100" alt="@s.Name" style="height:360px; object-fit:cover;" />
+                            }
+                            else
+                            {
+                                <div class="bg-light d-flex align-items-center justify-content-center" style="height:360px;">
+                                    <strong class="text-muted">No Image</strong>
+                                </div>
+                            }
+                        </div>
+                        <div class="col-md-7 p-4">
+                            <h3 class="mb-1">@s.Name</h3>
+                            <p class="text-muted mb-2">@s.Category?.Name</p>
+                            <p class="mb-2 text-truncate" style="max-height:4.5rem;">@s.Description</p>
+                            <p class="h4 text-success mb-3">@s.Price.ToString("C")</p>
+
+                            <div class="d-flex gap-2 align-items-center">
+                                <div class="input-group" style="width:150px;">
+                                    <input type="number" id="hero-qty-@s.Id" class="form-control form-control-sm" min="1" max="@s.Stock" value="1" />
+                                    <button type="button" class="btn btn-success btn-sm" onclick="addToCart(@s.Id)">
+                                        <i class="fas fa-cart-plus"></i> Add
+                                    </button>
+                                </div>
+                                <a asp-controller="Seeds" asp-action="Details" asp-route-id="@s.Id" class="btn btn-outline-primary btn-sm">View details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+}

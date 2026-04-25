@@ -1,5 +1,5 @@
-﻿@using SeedsProject.Models
-@model IEnumerable<Seed>
+﻿@using SeedsProject.ViewModels
+@model HomeIndexViewModel
 
 @{
     ViewData["Title"] = "Home";
@@ -7,108 +7,76 @@
 }
 
 <div class="container mt-4">
-    @if (Model != null && Model.Any())
-    {
-        var featured = Model.Take(5).ToList();
-        
-        <!-- Carousel -->
-        <div id="homeCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
-            <div class="carousel-inner">
-                @for (int i = 0; i < featured.Count; i++)
+    @* Hero carousel for featured seeds *@
+    @await Html.PartialAsync("~/Views/Shared/_HeroCarousel.cshtml", Model.Featured)
+
+    <div class="row g-4">
+        <div class="col-lg-9">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="mb-0">Shop Seeds</h4>
+                <div>
+                    <a asp-controller="Seeds" asp-action="Index" class="btn btn-outline-secondary btn-sm">View all</a>
+                    <a asp-controller="Order" asp-action="CartView" class="btn btn-success btn-sm ms-2">
+                        <i class="fas fa-shopping-cart"></i> Cart
+                    </a>
+                </div>
+            </div>
+
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                @foreach (var seed in Model.Seeds)
                 {
-                    var s = featured[i];
-                    <div class="carousel-item @(i == 0 ? "active" : "")">
-                        <div class="row align-items-center">
-                            <div class="col-md-5">
-                                @if (!string.IsNullOrEmpty(s.Image))
-                                {
-                                    <img src="@s.Image" class="d-block w-100 rounded" alt="@s.Name" style="max-height:320px; object-fit:cover;" />
-                                }
-                                else
-                                {
-                                    <div class="bg-light d-flex align-items-center justify-content-center" style="height:320px;">
-                                        <strong class="text-muted">No image</strong>
-                                    </div>
-                                }
-                            </div>
-                            <div class="col-md-7">
-                                <h3>@s.Name</h3>
-                                <p class="text-muted">@s.Category?.Name</p>
-                                <p>@s.Description</p>
-                                <p class="h5">@s.Price.ToString("C")</p>
-                                <div class="d-flex gap-2 align-items-center">
-                                    <div class="input-group" style="width:140px;">
-                                        <input type="number" id="home-qty-@s.Id" class="form-control form-control-sm" min="1" max="@s.Stock" value="1" />
-                                        <button type="button" class="btn btn-sm btn-success" onclick="addToCart(@s.Id)">
-                                            <i class="fas fa-cart-plus"></i> Add
-                                        </button>
-                                    </div>
-                                    <a asp-controller="Seeds" asp-action="Details" asp-route-id="@s.Id" class="btn btn-outline-primary">View details</a>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="col">
+                        @await Html.PartialAsync("~/Views/Shared/_ProductCard.cshtml", seed)
                     </div>
                 }
             </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#homeCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#homeCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
         </div>
 
-        <!-- Product grid -->
-        <h4 class="mb-3">Shop Seeds</h4>
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-            @foreach (var seed in Model)
-            {
-                <div class="col">
-                    <div class="card h-100">
-                        @if (!string.IsNullOrEmpty(seed.Image))
+        <aside class="col-lg-3">
+            <div class="card sticky-top" style="top:80px;">
+                <div class="card-body">
+                    <h5 class="card-title">Categories</h5>
+                    <ul class="list-unstyled mb-3">
+                        @foreach (var c in Model.Categories)
                         {
-                            <img src="@seed.Image" class="card-img-top" alt="@seed.Name" style="height:180px; object-fit:cover;" />
+                            <li>
+                                <a asp-controller="Categories" asp-action="Index" class="text-decoration-none">
+                                    <i class="fas fa-seedling text-success me-1"></i> @c.Name
+                                </a>
+                            </li>
                         }
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">@seed.Name</h5>
-                            <p class="card-text text-muted mb-1">@seed.Category?.Name</p>
-                            <p class="card-text" style="flex:1;">@((seed.Description?.Length > 120) ? seed.Description.Substring(0, 120) + "…" : seed.Description)</p>
-                            <div class="d-flex justify-content-between align-items-center mt-2">
-                                <div>
-                                    <span class="h6">@seed.Price.ToString("C")</span>
-                                    <div><small class="text-muted">Stock: @seed.Stock</small></div>
-                                </div>
-                                <div class="d-flex align-items-center">
-                                    <div class="input-group" style="width:120px;">
-                                        <input type="number" id="qty-@seed.Id" class="form-control form-control-sm" min="1" max="@seed.Stock" value="1" />
-                                        <button type="button" class="btn btn-sm btn-success" onclick="addToCart(@seed.Id)">
-                                            <i class="fas fa-cart-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="mt-3">
-                                <a asp-controller="Seeds" asp-action="Details" asp-route-id="@seed.Id" class="btn btn-sm btn-outline-info">Details</a>
-                                <a asp-controller="Seeds" asp-action="Edit" asp-route-id="@seed.Id" class="btn btn-sm btn-outline-warning">Edit</a>
-                            </div>
+                    </ul>
+
+                    <h6 class="mt-3">Popular</h6>
+                    @if (Model.Popular?.Any() ?? false)
+                    {
+                        <div class="list-group list-group-flush">
+                            @foreach (var p in Model.Popular)
+                            {
+                                <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" asp-controller="Seeds" asp-action="Details" asp-route-id="@p.Id">
+                                    <span>@p.Name</span>
+                                    <small class="text-success">@p.Price.ToString("C")</small>
+                                </a>
+                            }
                         </div>
-                    </div>
+                    }
                 </div>
-            }
-        </div>
-    }
-    else
-    {
-        <div class="alert alert-info">No seeds available at the moment, please try again later.</div>
-    }
+            </div>
+        </aside>
+    </div>
 </div>
+
+@section Styles {
+    <style>
+        .card .card-body .card-title { font-size: 1rem; }
+        .text-truncate { overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
+    </style>
+}
 
 @section Scripts {
     <script>
         async function addToCart(seedId) {
-            const qtyInput = document.getElementById(`qty-${seedId}`) || document.getElementById(`home-qty-${seedId}`);
+            const qtyInput = document.getElementById(`qty-${seedId}`) || document.getElementById(`hero-qty-${seedId}`);
             let quantity = parseInt(qtyInput?.value || "1", 10);
             if (!quantity || quantity < 1) quantity = 1;
 
@@ -125,10 +93,10 @@
                     return;
                 }
 
-                const data = await res.json();
                 // update layout badge if available
                 if (window.updateCartCount) window.updateCartCount();
-                // small confirmation
+
+                // simple toast
                 const message = `${quantity} item(s) added to cart.`;
                 const toast = document.createElement('div');
                 toast.className = 'toast align-items-center text-bg-success border-0';
