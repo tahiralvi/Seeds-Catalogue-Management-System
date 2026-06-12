@@ -17,7 +17,6 @@ namespace SeedsProject.Controllers
             _seedService = seedService;
         }
 
-        // Modernized home: returns featured seeds, product list and categories
         public async Task<IActionResult> Index()
         {
             var approvedSeeds = await _seedService.GetApprovedSeedsAsync() ?? new List<Seed>();

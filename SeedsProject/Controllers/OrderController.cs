@@ -10,7 +10,6 @@ namespace SeedsProject.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    // Change class inheritance to Controller to enable TempData
     public class OrderController : Controller
     {
         private readonly ILogger<OrderController> _logger;
